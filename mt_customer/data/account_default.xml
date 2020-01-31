@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+		<record id="default_customer_account_payable" model="account.account">
+            <field name="code">P0001</field>
+            <field name="name">Payable</field>
+            <field eval="True" name="reconcile"/>
+            <field name="user_type_id" ref="account.data_account_type_payable"/>
+        </record>
+    </data>
+</odoo>

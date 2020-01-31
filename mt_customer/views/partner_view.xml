@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_passport_form" model="ir.ui.view">
+            <field name="name">res.partner.passport</field>
+            <field name="model">res.partner</field>
+            <field name="priority">99</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <!-- <field name="groups_id" eval="[(5,)]"/> -->
+            <field name="arch" type="xml">
+                <page name="accounting" position="after">
+                    <page string="Passport" name="passport">
+                        <field name="passport_img" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [160, 160]}'/>
+                    </page>
+                </page>
+            </field>
+        </record>
+    </data>
+</odoo>
