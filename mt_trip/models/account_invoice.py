@@ -8,5 +8,5 @@ class AccountInvoiec(models.Models):
 	_inherit = 'account.invoice'
 
 
-	member_pay_id = fields.many2one('member.payments', strint='Member Payments')
-	payment_proves = fields.binary(string='Payment Prove')
+	member_id = fields.many2one('trip.member', strint='Member Payments')
+	payment_proves = fields.Binary(string='Payment Prove')

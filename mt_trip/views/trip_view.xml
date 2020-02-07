@@ -2,17 +2,25 @@
 <odoo>
     <data>
         
-        <record id="invoice_supplier_form" model="ir.ui.view">
-            <field name="name">account.invoice.supplier.form</field>
-            <field name="model">account.invoice</field>
-            <field name="priority">2</field>
+        <record id="trip_view_form" model="ir.ui.view">
+            <field name="name">trip.view.form</field>
+            <field name="model">mt.trip</field>
+            <field name="priority">1</field>
             <field name="arch" type="xml">
-                <form string="Vendor Bill">
-                                                                                                                                <header>
-                        <button name="action_invoice_open" type="object" states="draft" string="Validate" class="oe_highlight" groups="account.group_account_invoice"/>
+                <form string="Trip">
+                    <header>
+                        <button name="action_validate_trip" type="object" states="draft" string="Validate" class="oe_highlight" />
                     </header>
-                </form>
+                    <group>
+                        <field name="name"/>
+                        <field name="trip_template"/>
+                        
+                    </group>
+                    <group>
+                        
+                    </group>
 
+                </form>
             </field>
         </record>
     </data>

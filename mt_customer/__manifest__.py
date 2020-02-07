@@ -7,8 +7,9 @@
     'description': "",
     'depends': ['account'],
     'data': [
-        'views/partner_view.xml',
         'data/account_default.xml',
+        'views/partner_view.xml',
+        
         
     ],
     'demo': [
