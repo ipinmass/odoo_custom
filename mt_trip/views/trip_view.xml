@@ -9,19 +9,145 @@
             <field name="arch" type="xml">
                 <form string="Trip">
                     <header>
-                        <button name="action_validate_trip" type="object" states="draft" string="Validate" class="oe_highlight" />
+                        <button name="action_close_registration" type="object" state="open" string="Close Registration" class="oe_highlight" />
                     </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="trip_template"/>
+                            </group>
+                            <group>
+                                <field name="planned_date"/>
+                                <field name="admin"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Members">
+                                <field name="member_ids">
+                                    <tree>
+                                        <field name="partner_id"/>
+                                        <field name="is_document_completed"/>
+                                        <button name="action_show_documents" string="Show Documents" type="object"/>
+                                        <field name="is_invoice_paid"/>
+                                        <button name="action_show_invoice" string="Show Invoices" type="object"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Expenses" editable="bottom">
+                                <field name="expenses">
+                                    <tree editable="bottom">
+                                        <field name="name"/>
+                                        <field name="amount"/>
+                                        <field name="paid"/>
+                                    </tree>
+                                </field>
+                                
+                            </page>
+                        </notebook>
+                    </sheet>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="mt_trip_tree_view" model="ir.ui.view">
+            <field name="name">mt.trip.tree</field>
+            <field name="model">mt.trip</field>
+            <field name="arch" type="xml">
+                <tree string="Trip">
+                   <field name="name"/>
+               </tree>
+            </field>
+        </record>
+
+        <record id="mt_trip_search_view" model="ir.ui.view">
+            <field name="name">mt.trip.search</field>
+            <field name="model">mt.trip</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner">
+                   <field name="name"/>
+                   <!-- <field name="partner_id"/> -->
+                   <group expand="0" name="group_by" string="Group By">
+                       <filter name="name" string="Name" domain="[]" context="{'group_by' : 'name'}" />
+                   </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="trip_member_form_view" model="ir.ui.view">
+            <field name="name">trip.member.form</field>
+            <field name="model">trip.member</field>
+            <field name="arch" type="xml">
+                <form string="Trip Member">
                     <group>
-                        <field name="name"/>
-                        <field name="trip_template"/>
-                        
-                    </group>
-                    <group>
-                        
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="dp_amount"/>
+                        </group>
+                        <group>
+                            <field name="reseller"/>
+                            <field name="reseller_fee"/>
+                        </group>
+                        <notebook>
+                            <page string="Documents">
+                                <field name="document_ids">
+                                    <tree string="Documents">
+                                        <field name="name"/>
+                                        <field name="attachment"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Invoices">
+                                <field name="invoice_ids">
+                                    <tree string="Invoices">
+                                        <field name="name"/>
+                                        <!-- <field name="attachment"/> -->
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </group>
 
                 </form>
             </field>
         </record>
+        <record id="trip_expenses_from_view" model="ir.ui.view">
+            <field name="name">trip.expenses.form.view</field>
+            <field name="model">trip.expenses</field>
+            <field name="arch" type="xml">
+                <form string="Expenses">
+                    <field name="name"/>
+                    <field name="amount"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_trip_open" model="ir.actions.act_window">
+             <field name="name">Trip</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="res_model">mt.trip</field>
+             <field name="view_mode">tree,form</field>
+             <field name="view_type">form</field>
+             <field name="view_id" ref="mt_trip.mt_trip_tree_view"/>
+             <field name="search_view_id" ref="mt_trip.mt_trip_search_view"/>
+             <!-- <field name="context">{"search_default_filter_to_sell":1, "sale_multi_pricelist_product_template": 1}</field> -->
+             <field name="help" type="html">
+                 <p class="o_view_nocontent_smiling_face">
+                     Create a new product
+                 </p><p>
+                     You must define a product for everything you purchase,
+                     whether it's a physical product, a consumable or services.
+                 </p>
+             </field>
+         </record>
+
+
+        
+        <menuitem id="menu_trip_open" name="Trip" action="action_trip_open" parent="mail.menu_root_discuss" sequence="4"/>
+
+        <!-- <menuitem id="menu_trip_open" name="Trip"
+            parent="mail.menu_root_discuss"
+            action="mt_trip.action_act_window_trip_view" sequence="10"/> -->
     </data>
 </odoo>

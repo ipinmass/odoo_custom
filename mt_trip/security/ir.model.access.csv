@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_trip_user,mt.trip.user,mt_trip.model_mt_trip,base.group_system,1,0,0,0
+access_trip_manager,mt.trip.manager,mt_trip.model_mt_trip,base.group_system,1,1,1,1
+access_trip_member_user,trip.memeber.user,mt_trip.model_trip_member,base.group_system,1,0,0,0
+access_trip+member_manager,trip.memeber.manager,mt_trip.model_trip_member,base.group_system,1,1,1,1
+access_trip_template_user,mt.trip.template.user,mt_trip.model_trip_template,base.group_system,1,0,0,0
+access_trip_template_manager,mt.trip.template.manager,mt_trip.model_trip_template,base.group_system,1,1,1,1
+access_trip_document_template_user,trip.document.template.user,mt_trip.model_trip_document_template,base.group_system,1,0,0,0
+access_trip_document_template_manager,trip.document.template'.manager,mt_trip.model_trip_document_template,base.group_system,1,1,1,1
+access_trip_document_user,mt.trip.document.user,mt_trip.model_trip_document,base.group_system,1,0,0,0
+access_trip_document_manager,mt.trip.document.manager,mt_trip.model_trip_document,base.group_system,1,1,1,1
+access_trip_expenses_user,trip.expenses.user,mt_trip.model_trip_expenses,base.group_system,1,0,0,0
+access_trip_expenses_manager,trip.expenses.manager,mt_trip.model_trip_expenses,base.group_system,1,1,1,1
