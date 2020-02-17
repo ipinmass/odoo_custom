@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+         <record id="mt_reporting_form_view" model="ir.ui.view">
+            <field name="name">mt.reporting.form.view</field>
+            <field name="model">mt.reporting</field>
+            <field name="arch" type="xml">
+                <form string="Account Reporting">
+                    <sheet>
+                        <group>
+                           <group>
+                                <field name="show_report" widget="boolean_toggle"/>
+                            </group>
+                            <group>
+                                <field name="income"/>
+                                <field name="outcome"/>
+                                <field name="balance"/>
+                                <field name="dt_from" invisible="1"/>
+                                <field name="dt_to" invisible="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+                
+        <record id="action_mt_reporting_open" model="ir.actions.act_window">
+             <field name="name">Trip</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="res_model">mt.reporting</field>
+             <field name="view_mode">form</field>
+             <field name="view_type">form</field>
+             <field name="view_id" ref="mt_report.mt_reporting_form_view"/>
+             <field name="help" type="html">
+                 <p class="o_view_nocontent_smiling_face">
+                     ...
+                 </p><p>
+                     ...
+                 </p>
+             </field>
+         </record>
+
+
+        
+        <menuitem id="menu_show_reporting" name="Account Reporting" action="action_mt_reporting_open" parent="mail.menu_root_discuss" sequence="40"/>
+
+    </data>
+</odoo>
