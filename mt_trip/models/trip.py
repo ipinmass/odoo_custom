@@ -92,6 +92,7 @@ class TripMember(models.Model):
     installment_times = fields.Integer('Installment Times', required=True, default=1)
     payment_type = fields.Selection([('full', 'Full'), ('credit', 'Credit')], string='Payment Type', default='full')
     is_reseller_paid = fields.Boolean('Reseller Paid', readonly=True, default=False)
+    visa_appointment_date = fields.Date('VISA Appointment Date')
     
     @api.one
     @api.constrains('discount')

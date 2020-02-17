@@ -34,7 +34,7 @@
         </record>
         <menuitem id="menu_discuss_customer" name="Customers"
             parent="mail.menu_root_discuss"
-            action="base.action_partner_customer_form" sequence="1"/>
+            action="base.action_partner_customer_form" sequence="10"/>
 
     </data>
 </odoo>

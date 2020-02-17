@@ -3,7 +3,7 @@
     'version': '10.0',
     'category': 'Customer',
     'sequence': 999,
-    'summary': 'MT TRIP',
+    'summary': 'MA TRIP',
     'description': "",
     'depends': ['base','account', 'mt_customer'],
     'data': [
