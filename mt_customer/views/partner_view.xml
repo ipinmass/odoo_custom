@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
 
                 <field name="is_company" position="before">
-                    <field name="passport_img" widget='image' options='{"size": [500, 500]}'/>
+                    <field name="passport_img" widget='image' options='{"size": [500, 500]}' attrs="{'invisible': [('customer', '=', False)]}"/>
                 </field>
                 <field name="type" position="before">
                         <field name="gender"/>
@@ -34,7 +34,7 @@
         </record>
         <menuitem id="menu_discuss_customer" name="Customers"
             parent="mail.menu_root_discuss"
-            action="base.action_partner_customer_form" sequence="110"/>
+            action="base.action_partner_customer_form" sequence="1"/>
 
     </data>
 </odoo>

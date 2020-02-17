@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_payment_trip_expenses" model="ir.ui.view">
+            <field name="name">account.invoice.payment.trip.expenses</field>
+            <field name="model">account.payment</field>
+            <field name="priority">100</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <!-- <field name="groups_id" eval="[(5,)]"/> -->
+            <field name="arch" type="xml">
+            	<field name="payment_type" position="before">
+                    <field name="description"/>
+                    <field name="reseller_payment"/>
+                </field>
+                <field name="payment_type" position="attributes">
+                    <field name="invisible">1</field>
+                </field>
+			</field>
+
+        </record>
+        <record id="view_payment_trip_expenses_invoice" model="ir.ui.view">
+            <field name="name">account.invoice.payment.trip.expenses.invoice</field>
+            <field name="model">account.payment</field>
+            <field name="priority">100</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+            <!-- <field name="groups_id" eval="[(5,)]"/> -->
+            <field name="arch" type="xml">
+                <field name="payment_type" position="before">
+                    <group>
+                        <field name="description"/>   
+                    </group>
+                </field>
+                <field name="payment_type" position="attributes">
+                    <field name="invisible">1</field>
+                </field>
+            </field>
+
+        </record>
+
+</data></odoo>

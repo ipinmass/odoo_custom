@@ -1,5 +1,5 @@
 {
-    'name': '',
+    'name': 'MA Customer',
     'version': '10.0',
     'category': 'Customer',
     'sequence': 99,
@@ -7,7 +7,6 @@
     'description': "",
     'depends': ['account'],
     'data': [
-        'data/account_default.xml',
         'views/partner_view.xml',
         
         

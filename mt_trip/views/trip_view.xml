@@ -10,12 +10,14 @@
                 <form string="Trip">
                     <header>
                         <button name="action_close_registration" type="object" state="open" string="Close Registration" class="oe_highlight" />
+                        <field name="state" widget="statusbar" />
                     </header>
                     <sheet>
                         <group>
                             <group>
                                 <field name="name"/>
                                 <field name="trip_template"/>
+                                <field name="fare"/>
                             </group>
                             <group>
                                 <field name="planned_date"/>
@@ -27,22 +29,33 @@
                                 <field name="member_ids">
                                     <tree>
                                         <field name="partner_id"/>
+                                        <field name="invoice_ids" invisible="1"/>
+                                        <field name="document_ids" invisible="1"/>
                                         <field name="is_document_completed"/>
-                                        <button name="action_show_documents" string="Show Documents" type="object"/>
+                                        <!-- <button name="action_documents_show" string="Show Documents" type="object" attrs="{'invisible': [('document_ids', '=', [])]}"/> -->
+                                        <button name="action_documents_create" string="Create Documents" type="object" attrs="{'invisible': [('document_ids', '!=', [])]}"/>
                                         <field name="is_invoice_paid"/>
-                                        <button name="action_show_invoice" string="Show Invoices" type="object"/>
+                                        <button name="action_invoice_create" string="Create Invoices" type="object" attrs="{'invisible': [('invoice_ids', '!=', [])]}"/>
+                                        <button name="action_invoice_show" string="Show Invoices" type="object" attrs="{'invisible': [('invoice_ids', '=', [])]}"/>
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Expenses" editable="bottom">
-                                <field name="expenses">
-                                    <tree editable="bottom">
-                                        <field name="name"/>
+                            <page string="Expenses">
+                                <field name="expenses" context="{'trip_context': 'trip_payment'}">
+                                    <tree string="Expenses">
+                                        <field name="description"/>
                                         <field name="amount"/>
-                                        <field name="paid"/>
+                                        <field name="state"/>
                                     </tree>
                                 </field>
-                                
+                            </page>
+                            <page string="Profit Summary">
+                                <group>
+                                    <field name="total_expenses"/>
+                                    <field name="forcasted_income"/>
+                                    <field name="invoice_paid"/>
+                                    <field name="profit_loss"/>
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -84,15 +97,20 @@
                         <group>
                             <field name="partner_id"/>
                             <field name="dp_amount"/>
+                            <field name="discount"/>
+                            <field name="payment_type"/>
+                            <field name="installment_times" attrs="{'invisible': [('payment_type', '=', 'full')]}"/>
                         </group>
                         <group>
                             <field name="reseller"/>
                             <field name="reseller_fee"/>
+                            <field name="is_reseller_paid" invisible='1'/>
+                            <button name="action_pay_reseller" string="Create Reseller Payment" type="object" attrs="{'invisible': [('is_reseller_paid', '=', True)]}"/>
                         </group>
                         <notebook>
                             <page string="Documents">
                                 <field name="document_ids">
-                                    <tree string="Documents">
+                                    <tree string="Documents" editable="bottom">
                                         <field name="name"/>
                                         <field name="attachment"/>
                                     </tree>
@@ -102,6 +120,7 @@
                                 <field name="invoice_ids">
                                     <tree string="Invoices">
                                         <field name="name"/>
+                                        <field name="state"/>
                                         <!-- <field name="attachment"/> -->
                                     </tree>
                                 </field>
@@ -112,7 +131,7 @@
                 </form>
             </field>
         </record>
-        <record id="trip_expenses_from_view" model="ir.ui.view">
+        <!-- <record id="trip_expenses_from_view" model="ir.ui.view">
             <field name="name">trip.expenses.form.view</field>
             <field name="model">trip.expenses</field>
             <field name="arch" type="xml">
@@ -121,7 +140,57 @@
                     <field name="amount"/>
                 </form>
             </field>
+        </record> -->
+
+        <record id="mt_trip_template_search_view" model="ir.ui.view">
+            <field name="name">mt.trip.template.search</field>
+            <field name="model">trip.template</field>
+            <field name="arch" type="xml">
+                <search string="Search Template">
+                   <field name="name"/>
+                   <!-- <field name="partner_id"/> -->
+                   <group expand="0" name="group_by" string="Group By">
+                       <filter name="name" string="Name" domain="[]" context="{'group_by' : 'name'}" />
+                   </group>
+               </search>
+            </field>
         </record>
+
+        <record id="trip_template_tree_view" model="ir.ui.view">
+            <field name="name">trip.template.tree.view</field>
+            <field name="model">trip.template</field>
+            <field name="arch" type="xml">
+                <tree string="Expenses">
+                    <field name="name"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="trip_template_from_view" model="ir.ui.view">
+            <field name="name">trip.template.form.view</field>
+            <field name="model">trip.template</field>
+            <field name="arch" type="xml">
+                <form string="Trip Template">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <group>
+                            <field name="name"/>
+                    </group>
+                    <group>
+                        <field name="documents">
+                            <tree string="Documents Required" editable="bottom">
+                                <field name="name"/>
+                            </tree>
+                        </field>
+                    </group>
+                </form>
+            </field>
+        </record>
+
 
         <record id="action_trip_open" model="ir.actions.act_window">
              <field name="name">Trip</field>
@@ -144,7 +213,32 @@
 
 
         
-        <menuitem id="menu_trip_open" name="Trip" action="action_trip_open" parent="mail.menu_root_discuss" sequence="4"/>
+        <menuitem id="menu_trip_open" name="Trip" action="action_trip_open" parent="mail.menu_root_discuss" sequence="2"/>
+        
+
+        <record id="action_trip_template_open" model="ir.actions.act_window">
+             <field name="name">Trip Template</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="res_model">trip.template</field>
+             <field name="view_mode">tree,form</field>
+             <field name="view_type">form</field>
+             <field name="view_id" ref="mt_trip.trip_template_tree_view"/>
+             <field name="search_view_id" ref="mt_trip.mt_trip_template_search_view"/>
+             <!-- <field name="context">{"search_default_filter_to_sell":1, "sale_multi_pricelist_product_template": 1}</field> -->
+             <field name="help" type="html">
+                 <p class="o_view_nocontent_smiling_face">
+                     Create a new product
+                 </p><p>
+                     You must define a product for everything you purchase,
+                     whether it's a physical product, a consumable or services.
+                 </p>
+             </field>
+         </record>
+
+
+        
+        <menuitem id="menu_trip_template_open" name="Trip Template" action="action_trip_template_open" parent="mail.menu_root_discuss" sequence="3"/>
+
 
         <!-- <menuitem id="menu_trip_open" name="Trip"
             parent="mail.menu_root_discuss"

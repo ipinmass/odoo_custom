@@ -9,5 +9,3 @@ access_trip_document_template_user,trip.document.template.user,mt_trip.model_tri
 access_trip_document_template_manager,trip.document.template'.manager,mt_trip.model_trip_document_template,base.group_system,1,1,1,1
 access_trip_document_user,mt.trip.document.user,mt_trip.model_trip_document,base.group_system,1,0,0,0
 access_trip_document_manager,mt.trip.document.manager,mt_trip.model_trip_document,base.group_system,1,1,1,1
-access_trip_expenses_user,trip.expenses.user,mt_trip.model_trip_expenses,base.group_system,1,0,0,0
-access_trip_expenses_manager,trip.expenses.manager,mt_trip.model_trip_expenses,base.group_system,1,1,1,1

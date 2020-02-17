@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-		<record id="default_customer_account_payable" model="account.account">
-            <field name="code">CP01</field>
-            <field name="name">Customer Payable</field>
-            <field eval="True" name="reconcile"/>
-            <field name="user_type_id" ref="account.data_account_type_payable"/>
-        </record>
-        <record id="default_customer_account_receivable" model="account.account">
-            <field name="code">CR01</field>
-            <field name="name">Customer Receivable</field>
-            <field eval="True" name="reconcile"/>
-            <field name="user_type_id" ref="account.data_account_type_receivable"/>
-        </record>
     </data>
 </odoo>
