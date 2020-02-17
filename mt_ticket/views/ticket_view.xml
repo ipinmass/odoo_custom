@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record id="ticket_view_form" model="ir.ui.view">
+            <field name="name">ticket.view.form</field>
+            <field name="model">mt.ticket</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Tickets">
+                    <header>
+                        <button name="make_sale" type="object" state="draft" string="Make Sale" class="oe_highlight" attrs="{'invisible': [('invoice_id', '!=', False)]}"/>
+                        <button name="make_purchase" type="object" state="draft" string="Make Purchase" class="oe_highlight" attrs="{'invisible': [('payment_id', '!=', False)]}"/>
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="partner_id"/>
+                                <field name="ticket_type"/>
+                                <field name="airline_name"  attrs="{'invisible': [('ticket_type', '!=', 'flight')]}"/>
+                                <field name="airline_code"  attrs="{'invisible': [('ticket_type', '!=', 'flight')]}"/>
+                                <field name="e_ticket"  attrs="{'invisible': [('ticket_type', '!=', 'flight')]}"/>
+                                <field name="hotel_name"  attrs="{'invisible': [('ticket_type', '=', 'flight')]}"/>
+                                <field name="booking_code"  attrs="{'invisible': [('ticket_type', '=', 'flight')]}"/>
+                            </group>
+                            <group>
+                                <field name="sale_price"/>
+                                <field name="purchase_price"/>
+                                <field name="invoice_id"/>
+                                <field name="payment_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="mt_ticket_tree_view" model="ir.ui.view">
+            <field name="name">mt.ticket.tree</field>
+            <field name="model">mt.ticket</field>
+            <field name="arch" type="xml">
+                <tree string="Ticket">
+                   <field name="name"/>
+                   <field name="ticket_type"/>
+                   <field name="sale_price"/>
+                   <field name="purchase_price"/>
+                   <field name="state"/>
+               </tree>
+            </field>
+        </record>
+
+        <record id="mt_ticket_search_view" model="ir.ui.view">
+            <field name="name">mt.ticket.search</field>
+            <field name="model">mt.ticket</field>
+            <field name="arch" type="xml">
+                <search string="Search Ticket">
+                    <field name="name"/>
+                   <field name="partner_id"/>
+                   <!-- <field name="partner_id"/> -->
+                   <group expand="0" name="group_by" string="Group By">
+                       <filter name="name" string="Name" domain="[]" context="{'group_by' : 'name'}" />
+                   </group>
+               </search>
+            </field>
+        </record>
+
+
+        <record id="action_ticket_open" model="ir.actions.act_window">
+             <field name="name">Ticket</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="res_model">mt.ticket</field>
+             <field name="view_mode">tree,form</field>
+             <field name="view_type">form</field>
+             <field name="view_id" ref="mt_ticket.mt_ticket_tree_view"/>
+             <field name="search_view_id" ref="mt_ticket.mt_ticket_search_view"/>
+             <!-- <field name="context">{"search_default_filter_to_sell":1, "sale_multi_pricelist_product_template": 1}</field> -->
+             <field name="help" type="html">
+                 <p class="o_view_nocontent_smiling_face">
+                     ...
+                 </p><p>
+                     ...
+                 </p>
+             </field>
+         </record>
+         <menuitem id="menu_ticket_open" name="Tickets" action="action_ticket_open" parent="mail.menu_root_discuss" sequence="35"/>
+    </data>
+</odoo>
