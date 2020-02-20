@@ -19,10 +19,9 @@ class Trip(models.Model):
 
     name = fields.Char(string="Name", required=True)
     planned_date = fields.Date(string='Planned Date')
-    admin = fields.Many2one('res.partner', string='Admin')
+    admin = fields.Many2one('res.partner', string='Admin', domain=[('customer','=', False)])
     state = fields.Selection([('open', 'Open'),('progress', 'Progress'),('done', 'Done'), ('cancel', 'Cancel')], default='open')
     member_ids = fields.One2many('trip.member', 'trip_id', string='Members')
-    expenses = fields.One2many('account.payment', 'trip_id', string='Expenses')
     trip_template = fields.Many2one('trip.template', 'Trip Template', domain=[('active','=', True)])
     fare = fields.Float('Fare')
     total_expenses = fields.Monetary(string='Total Expenses',
@@ -51,10 +50,10 @@ class Trip(models.Model):
 
 
     @api.one
-    @api.depends('member_ids.invoice_ids.state', 'member_ids.invoice_ids.amount_total', 'expenses.amount')
+    @api.depends('member_ids.invoice_ids.state', 'member_ids.invoice_ids.amount_total', 'expense_ids.amount')
     def _compute_amount(self):
         total_expenses = 0.0
-        for exp in self.expenses:
+        for exp in self.expense_ids:
             total_expenses += exp.amount
         self.total_expenses = total_expenses
         forcasted_income = 0.0
@@ -78,6 +77,10 @@ class Trip(models.Model):
     def _get_report_base_filename(self):
         self.ensure_one()
         return  'Trip Member Summary'
+    @api.multi
+    def _get_report_base_filename_2(self):
+        self.ensure_one()
+        return  'Payment Summary'
    
 
 class TripMember(models.Model):
@@ -242,9 +245,12 @@ class TripMember(models.Model):
         expense_vals = {
             'name': 'Reseller Payment - %s - %s ' %(self.reseller.name, self.trip_id.name),
             'amount': self.reseller_fee,
-            'expense_type': 'other',
+            'expense_type': 'reseller',
             'trip_id': self.trip_id.id
         }
+        created_expense = expense_obj.create(expense_vals)
+        created_expense.button_confirm()
+        self.is_reseller_paid = True
         return True
 
 

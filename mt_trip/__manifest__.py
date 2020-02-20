@@ -11,10 +11,12 @@
         'data/company_data.xml',
         'views/trip_view.xml',
         'views/invoice_view.xml',
-        'views/account_payment_view.xml',
+        'views/expense_view.xml',
         'report/trip_report.xml',
+        'report/remaining_payments.xml',
         'report/report.xml',
         'security/ir.model.access.csv',
+        'data/am_group.xml',
         
         
     ],

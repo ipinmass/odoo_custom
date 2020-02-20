@@ -84,6 +84,6 @@
                  </p>
              </field>
          </record>
-         <menuitem id="menu_ticket_open" name="Tickets" action="action_ticket_open" parent="mail.menu_root_discuss" sequence="35"/>
+         <menuitem id="menu_ticket_open" name="Tickets" action="action_ticket_open" parent="mail.menu_root_discuss" sequence="35" groups="mt_trip.mt_group_ticket"/>
     </data>
 </odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="mt_group_admin" model="res.groups">
+            <field name="name">Trip Admin</field>
+            <field name="category_id" ref="base.module_category_account_voucher"/>
+        </record>
+        <record id="mt_group_ticket" model="res.groups">
+            <field name="name">Trip Tickets</field>
+            <field name="category_id" ref="base.module_category_account_voucher"/>
+        </record>
+    </data>
+</odoo>

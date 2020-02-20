@@ -41,25 +41,12 @@
                                 </field>
                             </page>
                             <page string="Expenses">
-                                <field name="expenses" context="{'trip_context': 'trip_payment'}">
-                                    <tree string="Expenses">
-                                        <field name="description"/>
-                                        <field name="amount"/>
-                                        <field name="state"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="Expenses 2">
                                 <field name="expense_ids">
-                                    <tree string="Expenses" editable="bottom">
+                                    <tree string="Expenses">
                                         <field name="name"/>
                                         <field name="expense_type"/>
                                         <field name="amount"/>
-                                        <field name="ticket_code" attrs="{'readonly': [('expense_type','!=','hotel')]}"/>
-                                        <field name="people" attrs="{'readonly': [('expense_type','!=','hotel')]}"/>
                                         <field name="state"/>
-                                        <button name="button_confirm" string="Confirm" type="object" attrs="{'invisible': [('state','not in',[False, 'draft', 'open', 'in_payment'])]}"/>
-                                        <button name="assign_hotel" string="Assign Hotel" type="object" attrs="{'invisible': [('state','not in',['paid'])]}" class="oe_highlight"/>
                                     </tree>
                                 </field>
                             </page>
@@ -122,8 +109,10 @@
                             <field name="reseller"/>
                             <field name="reseller_fee"/>
                             <field name="is_reseller_paid" invisible='1'/>
-                            <button name="action_pay_reseller" string="Create Reseller Payment" type="object" attrs="{'invisible': [('is_reseller_paid', '=', True)]}"/>
+                            <button name="action_pay_reseller" string="Create Reseller Payment" type="object" attrs="{'invisible': [('is_reseller_paid', '=', True)]}" class="oe_highlight"/>
                         </group>
+                    </group>
+                    <group>
                         <notebook>
                             <page string="Documents">
                                 <field name="document_ids">
@@ -148,16 +137,6 @@
                 </form>
             </field>
         </record>
-        <!-- <record id="trip_expenses_from_view" model="ir.ui.view">
-            <field name="name">trip.expenses.form.view</field>
-            <field name="model">trip.expenses</field>
-            <field name="arch" type="xml">
-                <form string="Expenses">
-                    <field name="name"/>
-                    <field name="amount"/>
-                </form>
-            </field>
-        </record> -->
 
         <record id="mt_trip_template_search_view" model="ir.ui.view">
             <field name="name">mt.trip.template.search</field>
@@ -177,7 +156,7 @@
             <field name="name">trip.template.tree.view</field>
             <field name="model">trip.template</field>
             <field name="arch" type="xml">
-                <tree string="Expenses">
+                <tree string="Trip Template">
                     <field name="name"/>
                     <field name="active" widget="boolean_toggle"/>
                 </tree>
@@ -230,7 +209,7 @@
 
 
         
-        <menuitem id="menu_trip_open" name="Trip" action="action_trip_open" parent="mail.menu_root_discuss" sequence="20"/>
+        <menuitem id="menu_trip_open" name="Trip" action="action_trip_open" parent="mail.menu_root_discuss" sequence="20" groups="mt_trip.mt_group_admin"/>
         
 
         <record id="action_trip_template_open" model="ir.actions.act_window">
@@ -244,17 +223,16 @@
              <!-- <field name="context">{"search_default_filter_to_sell":1, "sale_multi_pricelist_product_template": 1}</field> -->
              <field name="help" type="html">
                  <p class="o_view_nocontent_smiling_face">
-                     Create a new product
+                     ...
                  </p><p>
-                     You must define a product for everything you purchase,
-                     whether it's a physical product, a consumable or services.
+                    ...
                  </p>
              </field>
          </record>
 
 
         
-        <menuitem id="menu_trip_template_open" name="Trip Template" action="action_trip_template_open" parent="mail.menu_root_discuss" sequence="30"/>
+        <menuitem id="menu_trip_template_open" name="Trip Template" action="action_trip_template_open" parent="mail.menu_root_discuss" sequence="30" groups="mt_trip.mt_group_admin"/>
 
 
         <!-- <menuitem id="menu_trip_open" name="Trip"

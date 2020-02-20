@@ -43,7 +43,7 @@
 
 
         
-        <menuitem id="menu_show_reporting" name="Account Reporting" action="action_mt_reporting_open" parent="mail.menu_root_discuss" sequence="40"/>
+        <menuitem id="menu_show_reporting" name="Account Reporting" action="action_mt_reporting_open" parent="mail.menu_root_discuss" sequence="40" groups="mt_trip.mt_group_admin"/>
 
     </data>
 </odoo>
