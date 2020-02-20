@@ -12,7 +12,9 @@
         'views/trip_view.xml',
         'views/invoice_view.xml',
         'views/account_payment_view.xml',
-        'security/ir.model.access.csv'
+        'report/trip_report.xml',
+        'report/report.xml',
+        'security/ir.model.access.csv',
         
         
     ],

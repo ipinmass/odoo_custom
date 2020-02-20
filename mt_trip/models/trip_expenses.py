@@ -39,3 +39,86 @@ class AccountPayment(models.Model):
         return {}
 
 
+class TripExpenses(models.Model):
+    _name = 'trip.expense'
+
+
+    @api.model
+    def _default_currency(self):
+        return self.env.user.company_id.currency_id
+
+    name = fields.Char('Name')
+    currency_id = fields.Many2one('res.currency', string='Currency',
+        required=True, readonly=True, states={'draft': [('readonly', False)]},
+        default=_default_currency, track_visibility='always')
+    amount = fields.Monetary(string='Amount', help='Amount of all paid invoices', store=True, track_visibility='always')
+    expense_type = fields.Selection([('hotel', 'Hotel'),('flight', 'Flight'),('other', 'Other')], string='Expense Type', default='hotel', required=True)
+    invoice_id = fields.Many2one('account.invoice', string='Supplier Invoice')
+    ticket_code = fields.Char('Code')
+    state = fields.Selection(string='State', related='invoice_id.state', readonly=True)
+    trip_id = fields.Many2one('mt.trip', string='Related Trip')
+    people = fields.Integer('Number of People')
+
+    @api.one
+    def button_confirm(self):
+        inv_obj = self.env['account.invoice']
+        partner_id = self.env.ref('mt_trip.supplier_generic_ma_travel')
+        journal_id = self.env.ref('mt_trip.mt_journal_payment_id').id
+        company_id = self.env.user.company_id
+
+        if not all ([partner_id, journal_id]):
+            return True
+
+        vinvoice = self.env['account.invoice'].new({'partner_id': partner_id.id})
+        # Get partner extra fields
+        vinvoice._onchange_partner_id()
+        invoice_vals = vinvoice._convert_to_write(vinvoice._cache)
+        invoice_vals = {
+            'name': 'Sup Invoice - ' + (self.trip_id and self.trip_id.name or ''),
+            'origin': self.name or '',
+            'type': 'in_invoice',
+            'account_id': partner_id.property_account_payable_id.id,
+            'journal_id': journal_id,
+            'currency_id': self.env.user.company_id.currency_id.id,
+            'company_id': company_id.id,
+            'user_id': self.env.user.id,
+            'partner_id': partner_id.id
+        }
+
+        invoice_line_vals = {
+            'name': partner_id.name,
+            'origin': self.name or '',
+            'account_id': partner_id.property_account_payable_id.id,
+            'price_unit': self.amount,
+            'quantity': 1,
+            'discount': 0.0,
+           
+        }
+        inv_created = inv_obj.create(invoice_vals)
+        
+        invoice_line_vals.update({'invoice_id': inv_created.id})
+        self.env['account.invoice.line'].create(invoice_line_vals)
+        self.invoice_id =  inv_created
+        inv_created.action_invoice_open()
+        return True
+
+
+    @api.one
+    def assign_hotel(self):
+        if self.expense_type == 'hotel':
+            members_to_code = self.trip_id.member_ids.filtered(lambda member: member.hotel_code == '' or member.hotel_code == False)
+            dif =  self.people - len(members_to_code)
+            if dif <= 0:
+                for d in range(0, self.people):
+                    members_to_code[d].hotel_code = self.ticket_code
+                    self.people = 0
+            else:
+                for m in members_to_code:
+                    m.hotel_code = self.ticket_code
+                self.people = dif
+        return True
+
+
+
+
+

@@ -49,6 +49,20 @@
                                     </tree>
                                 </field>
                             </page>
+                            <page string="Expenses 2">
+                                <field name="expense_ids">
+                                    <tree string="Expenses" editable="bottom">
+                                        <field name="name"/>
+                                        <field name="expense_type"/>
+                                        <field name="amount"/>
+                                        <field name="ticket_code" attrs="{'readonly': [('expense_type','!=','hotel')]}"/>
+                                        <field name="people" attrs="{'readonly': [('expense_type','!=','hotel')]}"/>
+                                        <field name="state"/>
+                                        <button name="button_confirm" string="Confirm" type="object" attrs="{'invisible': [('state','not in',[False, 'draft', 'open', 'in_payment'])]}"/>
+                                        <button name="assign_hotel" string="Assign Hotel" type="object" attrs="{'invisible': [('state','not in',['paid'])]}" class="oe_highlight"/>
+                                    </tree>
+                                </field>
+                            </page>
                             <page string="Profit Summary">
                                 <group>
                                     <field name="total_expenses"/>
@@ -101,6 +115,8 @@
                             <field name="payment_type"/>
                             <field name="installment_times" attrs="{'invisible': [('payment_type', '=', 'full')]}"/>
                             <field name="visa_appointment_date"/>
+                            <field name="hotel_code"/>
+                            <field name="flight_code"/>
                         </group>
                         <group>
                             <field name="reseller"/>

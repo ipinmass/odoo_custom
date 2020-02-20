@@ -36,7 +36,7 @@ class Trip(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency',
         required=True, readonly=True, states={'draft': [('readonly', False)]},
         default=_default_currency, track_visibility='always')
-
+    expense_ids = fields.One2many('trip.expense', 'trip_id', string='Expenses')
 
     @api.one
     @api.constrains('member_ids')
@@ -73,6 +73,11 @@ class Trip(models.Model):
     @api.multi
     def action_close_registration(self):
         return self.write({'state': 'progress'})
+
+    @api.multi
+    def _get_report_base_filename(self):
+        self.ensure_one()
+        return  'Trip Member Summary'
    
 
 class TripMember(models.Model):
@@ -85,7 +90,7 @@ class TripMember(models.Model):
     invoice_ids = fields.One2many('account.invoice', 'member_id', string='Invoice Lines')
     trip_id = fields.Many2one('mt.trip', string='Trip ID')
     is_document_completed = fields.Boolean('Documents Completed', readonly=True)
-    is_invoice_paid = fields.Boolean('Invoiced Paid', readonly=True)
+    is_invoice_paid = fields.Boolean('Invoices Paid', readonly=True)
     reseller = fields.Many2one('res.partner', string="Reseller", domain=[('customer', '=', False)])
     reseller_fee = fields.Float(string='Reseller Fee', digits=dp.get_precision('Product Price'))
     discount = fields.Float('Discount (%)')
@@ -93,11 +98,13 @@ class TripMember(models.Model):
     payment_type = fields.Selection([('full', 'Full'), ('credit', 'Credit')], string='Payment Type', default='full')
     is_reseller_paid = fields.Boolean('Reseller Paid', readonly=True, default=False)
     visa_appointment_date = fields.Date('VISA Appointment Date')
+    hotel_code = fields.Char('Hotel Code')
+    flight_code = fields.Char('Flight Code')
     
     @api.one
     @api.constrains('discount')
     def _check_discount(self):
-        if self.discount > 0:
+        if self.discount > 100:
             raise ValidationError(_("Discount cannot exceed 100%!."))
 
     
@@ -158,16 +165,17 @@ class TripMember(models.Model):
         
         # handle the down payment part
         dp_amt = self.dp_amount
-        origin = 'DP - %s - %s ' %(self.partner_id.name, self.trip_id.name)
-        inv_vals = self._prepare_invoice(origin=origin)
-        inv_vals.update({'name': 'DP - ' + self.trip_id.name})
-        inv_created = inv_obj.create(inv_vals)
-        inv_line_vals = self._prepare_invoice_line(qty, dp_amt, origin=origin)
-        # omit discount from down payment invoice
-        inv_line_vals['discount'] = 0.0
-        inv_line_vals.update({'invoice_id': inv_created.id})
-        self.env['account.invoice.line'].create(inv_line_vals)
-        inv_created.update({'member_id': self.id})
+        if dp_amt > 0.0:
+            origin = 'DP - %s - %s ' %(self.partner_id.name, self.trip_id.name)
+            inv_vals = self._prepare_invoice(origin=origin)
+            inv_vals.update({'name': 'DP - ' + self.trip_id.name})
+            inv_created = inv_obj.create(inv_vals)
+            inv_line_vals = self._prepare_invoice_line(qty, dp_amt, origin=origin)
+            # omit discount from down payment invoice
+            inv_line_vals['discount'] = 0.0
+            inv_line_vals.update({'invoice_id': inv_created.id})
+            self.env['account.invoice.line'].create(inv_line_vals)
+            inv_created.update({'member_id': self.id})
         # make the invoice paid
         # inv_created.action_invoice_open()
         origin = 'INV - %s - %s ' %(self.partner_id.name, self.trip_id.name)
@@ -228,36 +236,15 @@ class TripMember(models.Model):
 
     @api.one
     def action_pay_reseller(self):
-        msg = {'message_follower_ids': [(0,
-                                       0,
-                                       {'partner_id': 3,
-                                        'res_model': 'account.payment',
-                                        'subtype_ids': [(6, 0, [1])]})],}
-        
-        if self.reseller_fee > 0 and self.reseller:
-            description = 'Reseller Fee - ' + self.reseller.name
-            payment_vals = {
-                 'amount': self.reseller_fee,
-                 'communication': False,
-                 'currency_id': self.env.user.company_id.currency_id.id,
-                 'description': description,
-                 'destination_journal_id': False,
-                 'journal_id': self.env.ref('mt_trip.mt_journal_payment_id').id,
-                 'message_attachment_count': 0,
-                 'partner_bank_account_id': False,
-                 'partner_id': self.reseller and self.reseller.id,
-                 'partner_type': 'supplier',
-                 'payment_date': date.today(),
-                 'payment_method_id': self.env.ref('account.account_payment_method_manual_out').id,
-                 'payment_type': 'outbound',
-                 'reseller_payment': True,
-                 'trip_id': self.trip_id.id,
-
-            }
-
-            self.env['account.payment'].create(payment_vals)
-            self.is_reseller_paid = True
-            _logger.info('================ paument reseller %s', payment_vals)
+        if not self.reseller or self.reseller_fee <= 0.0:
+            return True
+        expense_obj = self.env['trip.expense']
+        expense_vals = {
+            'name': 'Reseller Payment - %s - %s ' %(self.reseller.name, self.trip_id.name),
+            'amount': self.reseller_fee,
+            'expense_type': 'other',
+            'trip_id': self.trip_id.id
+        }
         return True
 
 

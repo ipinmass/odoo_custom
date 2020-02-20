@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="expense_view_form" model="ir.ui.view">
+            <field name="name">trip.view.form</field>
+            <field name="model">trip.expense</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Expenses">
+                	<field name="name"/>
+                	<field name="expens_type"/>
+                	<field name="ticket_code"/>
+                	<field name="amount"/>
+                	<field name="people" attrs="{'invisible': [('readonly','!=','hotel')]}"/>
+                    <field name="state"/>
+                                        
+                </form>
+			</field>
+		</record>
+	</data>
+</odoo>

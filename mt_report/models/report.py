@@ -57,7 +57,7 @@ class Report(models.TransientModel):
         '''
         self.env.cr.execute(_sql)
         res = self.env.cr.dictfetchall()
-        # _logger.info('================= cr execute, %s', res)
+        _logger.info('================= cr execute, %s', res)
         balance = res and res[0].get('balance', 0.0) or 0.0
         income = res and res[0].get('income', 0.0) or 0.0
         outcome = res and res[0].get('outcome', 0.0) or 0.0
