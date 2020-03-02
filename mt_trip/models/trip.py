@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class Trip(models.Model):
     _name = 'mt.trip'
+    _order = 'planned_date, id'
 
     @api.model
     def _default_currency(self):
@@ -36,18 +37,21 @@ class Trip(models.Model):
         required=True, readonly=True, states={'draft': [('readonly', False)]},
         default=_default_currency, track_visibility='always')
     expense_ids = fields.One2many('trip.expense', 'trip_id', string='Expenses')
+    personal_expenses = fields.One2many('trip.expense', 'trip_id_personal', string='Expenses')
 
     @api.one
     @api.constrains('member_ids')
     def _check_member(self):
-        partner_ids = []
+        passports = {}
         for member in self.member_ids:
-            partner_ids.append(member.partner_id.id)
-        a = len(partner_ids)
-        b = len(set(partner_ids))
-        if a != b:
-            raise ValidationError(_("Member is already registered in this trip."))
-
+            passport = member.partner_id.passport_no or ''
+            if passport and passport not in passports:
+                passports.update({passport: member.partner_id.name})
+            elif passport and passport in passports:
+                raise ValidationError(_("The member is already registered with passport: %s. Existed: %s. Attempting to add: %s"\
+                    %(passport,passports.get(passport), member.partner_id.name)))
+            else:
+                raise ValidationError(_("This member has no passport data. Name: %s" %member.partner_id.name))    
 
     @api.one
     @api.depends('member_ids.invoice_ids.state', 'member_ids.invoice_ids.amount_total', 'expense_ids.amount')
@@ -85,16 +89,17 @@ class Trip(models.Model):
 
 class TripMember(models.Model):
     _name = 'trip.member'
+    _order = 'sequence, id'
 
     # name = fields.Char('Name', related='partner_id.name', readonly=True)
-    partner_id = fields.Many2one('res.partner', 'Customer', domain=[('customer', '=', True)])
+    partner_id = fields.Many2one('res.partner', 'Customer', domain=[('customer', '=', True)], required=True)
     document_ids = fields.One2many('trip.document', 'member_id', string='Documents')
     dp_amount = fields.Float(string='DP Amount', digits=dp.get_precision('Product Price'))
     invoice_ids = fields.One2many('account.invoice', 'member_id', string='Invoice Lines')
     trip_id = fields.Many2one('mt.trip', string='Trip ID')
     is_document_completed = fields.Boolean('Documents Completed', readonly=True)
     is_invoice_paid = fields.Boolean('Invoices Paid', readonly=True)
-    reseller = fields.Many2one('res.partner', string="Reseller", domain=[('customer', '=', False)])
+    reseller = fields.Many2one('res.partner', related='partner_id.reseller_id', string="Reseller", domain=[('customer', '=', False)])
     reseller_fee = fields.Float(string='Reseller Fee', digits=dp.get_precision('Product Price'))
     discount = fields.Float('Discount (%)')
     installment_times = fields.Integer('Installment Times', required=True, default=1)
@@ -103,7 +108,20 @@ class TripMember(models.Model):
     visa_appointment_date = fields.Date('VISA Appointment Date')
     hotel_code = fields.Char('Hotel Code')
     flight_code = fields.Char('Flight Code')
-    
+    dp_proof = fields.Binary('DP proof')
+    sequence = fields.Integer('Sequence')
+    show_pay_reseller = fields.Boolean('Show Pay Reseller', default=False, compute='_check_show_reseller')
+        
+
+    @api.one
+    @api.depends('is_reseller_paid', 'invoice_ids', 'invoice_ids.state')
+    def _check_show_reseller(self):
+        inv_paid = self.invoice_ids and all([inv.state=='paid' for inv in self.invoice_ids])
+        if inv_paid and not self.is_reseller_paid:
+            self.show_pay_reseller = True
+
+
+
     @api.one
     @api.constrains('discount')
     def _check_discount(self):
@@ -172,6 +190,7 @@ class TripMember(models.Model):
             origin = 'DP - %s - %s ' %(self.partner_id.name, self.trip_id.name)
             inv_vals = self._prepare_invoice(origin=origin)
             inv_vals.update({'name': 'DP - ' + self.trip_id.name})
+            inv_vals.update({'dp_proof': self.dp_proof or None})
             inv_created = inv_obj.create(inv_vals)
             inv_line_vals = self._prepare_invoice_line(qty, dp_amt, origin=origin)
             # omit discount from down payment invoice
@@ -214,27 +233,30 @@ class TripMember(models.Model):
         action_vals['views'] = [(self.env.ref('account.invoice_tree').id, 'tree'), (self.env.ref('account.invoice_form').id, 'form')]
         return action_vals
 
-    # @api.one
-    # def action_pay_reseller(self):
-    #     amt = self.reseller_fee
-    #     acp = self.env['account.payment']
-    #     if amt > 0.0:
-    #         partner = self.reseller_id
-
-
-
 
     @api.one
     def action_documents_create(self):
+        context = self.env.context.copy()
+        context.update({'create_from_buttton': True})
         templates = self.trip_id and self.trip_id.trip_template
         trip_doc_obj = self.env['trip.document']
+        doc_history = self.env['partner.document.history']
         if templates:
+            docs = {}
+            histories = doc_history.search([('partner_id','=', self.partner_id.id)])
+            for history in histories:
+                if (history.doc_type.id not in docs) or (docs.get(history.doc_type.id,)\
+                                                    and docs.get(history.doc_type.id).get('create_date') < history.create_date):
+                    docs.update({history.doc_type.id: {'create_date': history.create_date, 'doc': history.doc}})
             for doc in templates.documents:
                 v = {
                     'name': doc.name,
-                    'member_id': self.id
+                    'member_id': self.id,
+                    'attachment': docs.get(doc.doc_type.id,{}).get('doc', None),
+                    'is_image': doc.doc_type.is_image,
+                    'doc_type':doc.doc_type.id
                 }
-                trip_doc_obj.create(v)
+                trip_doc_obj.with_context(context).create(v)
         return True
 
     @api.one
@@ -273,13 +295,44 @@ class TripDocumentTemplate(models.Model):
     _name = 'trip.document.template'
 
     template_id = fields.Many2one('trip.template', string='Trip Template')
-    name = fields.Char('Document Name')
+    doc_type = fields.Many2one('document.type.config', required=True)
+    name = fields.Char('Document Name', required=True)
     
 
 class TripDocument(models.Model):
     _name = 'trip.document'
 
-    member_id = fields.Many2one('trip.member', string='Trip Template')
+    member_id = fields.Many2one('trip.member', string='Trip Member')
     name = fields.Char('Document Name')
-    is_image = fields.Boolean('Scanned Image?', readonly=True)
+    is_image = fields.Boolean('Scanned Image?')
     attachment = fields.Binary('Attachment')
+    doc_type = fields.Many2one('document.type.config', required=True)
+
+    @api.multi
+    def write(self, values):
+        if 'attachment' in values:
+            history_obj = self.env['partner.document.history']
+            partner = self.member_id.partner_id
+            history_obj.create({
+                'partner_id': partner.id,
+                'doc_type': values.get('doc_type') or self.doc_type.id ,
+                'doc': values.get('attachment'),
+                'name': '%s uploaded from trip member update' %(values.get('name', False) or self.name),
+                })
+
+        return super(TripDocument, self).write(values)
+
+    @api.model
+    def create(self, vals):
+        if not self._context.get('create_from_buttton', False) and vals.get('member_id'):
+            history_obj = self.env['partner.document.history']
+            partner = self.env['trip.member'].browse(vals.get('member_id')).partner_id
+            history_obj.create({
+                'partner_id': partner.id,
+                'doc_type': vals.get('doc_type') or self.doc_type.id ,
+                'doc': vals.get('attachment'),
+                'name': '%s uploaded from trip member creation' %(vals.get('name', False) or self.name),
+                })
+
+        return super(TripDocument, self).create(vals)
+

@@ -28,23 +28,41 @@
                             <page string="Members">
                                 <field name="member_ids">
                                     <tree>
+                                        <field name="sequence"/>
                                         <field name="partner_id"/>
                                         <field name="invoice_ids" invisible="1"/>
                                         <field name="document_ids" invisible="1"/>
                                         <field name="is_document_completed"/>
-                                        <!-- <button name="action_documents_show" string="Show Documents" type="object" attrs="{'invisible': [('document_ids', '=', [])]}"/> -->
-                                        <button name="action_documents_create" string="Create Documents" type="object" attrs="{'invisible': [('document_ids', '!=', [])]}"/>
+                                        <field name="is_reseller_paid"/>
+                                        <button name="action_documents_create" string="Register Documents" type="object" attrs="{'invisible': [('document_ids', '!=', [])]}"/>
                                         <field name="is_invoice_paid"/>
                                         <button name="action_invoice_create" string="Create Invoices" type="object" attrs="{'invisible': [('invoice_ids', '!=', [])]}"/>
                                         <button name="action_invoice_show" string="Show Invoices" type="object" attrs="{'invisible': [('invoice_ids', '=', [])]}"/>
                                     </tree>
                                 </field>
                             </page>
-                            <page string="Expenses">
-                                <field name="expense_ids">
-                                    <tree string="Expenses">
+                            <page string="Personal Expenses">
+                                <field name="personal_expenses">
+                                    <tree string="General Expenses" editable="bottom">
                                         <field name="name"/>
-                                        <field name="expense_type"/>
+                                        <field name="expense_type" widget="selection" domain="[('personal', '=', True)]"/>
+                                        <field name="partner_id"/>
+                                        <field name="dtof_birth"/>
+                                        <field name="code"/>
+                                        <field name="passport_no"/>
+                                        <field name="passport_exp"/>
+                                        <field name="passport_issued"/>
+                                        <field name="amount"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            
+                            </page>
+                            <page string="General Expenses">
+                                <field name="expense_ids">
+                                    <tree string="Expenses" editable="bottom">
+                                        <field name="name"/>
+                                        <field name="expense_type" widget="selection" domain="[('personal', '=', False)]"/>
                                         <field name="amount"/>
                                         <field name="state"/>
                                     </tree>
@@ -96,8 +114,10 @@
                 <form string="Trip Member">
                     <group>
                         <group>
+                            <field name="sequence"/>
                             <field name="partner_id"/>
                             <field name="dp_amount"/>
+                            <field name="dp_proof"/>
                             <field name="discount"/>
                             <field name="payment_type"/>
                             <field name="installment_times" attrs="{'invisible': [('payment_type', '=', 'full')]}"/>
@@ -108,8 +128,9 @@
                         <group>
                             <field name="reseller"/>
                             <field name="reseller_fee"/>
-                            <field name="is_reseller_paid" invisible='1'/>
-                            <button name="action_pay_reseller" string="Create Reseller Payment" type="object" attrs="{'invisible': [('is_reseller_paid', '=', True)]}" class="oe_highlight"/>
+                            <field name="is_reseller_paid"/>
+                            <field name="show_pay_reseller" invisible="1"/>
+                            <button name="action_pay_reseller" string="Create Reseller Payment" type="object" attrs="{'invisible': [('show_pay_reseller', '=', False)]}" class="oe_highlight"/>
                         </group>
                     </group>
                     <group>
@@ -119,6 +140,8 @@
                                     <tree string="Documents" editable="bottom">
                                         <field name="name"/>
                                         <field name="attachment"/>
+                                        <field name="doc_type"/>
+                                        <field name="is_image"/>
                                     </tree>
                                 </field>
                             </page>
@@ -127,7 +150,6 @@
                                     <tree string="Invoices">
                                         <field name="name"/>
                                         <field name="state"/>
-                                        <!-- <field name="attachment"/> -->
                                     </tree>
                                 </field>
                             </page>
@@ -144,7 +166,6 @@
             <field name="arch" type="xml">
                 <search string="Search Template">
                    <field name="name"/>
-                   <!-- <field name="partner_id"/> -->
                    <group expand="0" name="group_by" string="Group By">
                        <filter name="name" string="Name" domain="[]" context="{'group_by' : 'name'}" />
                    </group>
@@ -180,6 +201,7 @@
                         <field name="documents">
                             <tree string="Documents Required" editable="bottom">
                                 <field name="name"/>
+                                <field name="doc_type"/>
                             </tree>
                         </field>
                     </group>

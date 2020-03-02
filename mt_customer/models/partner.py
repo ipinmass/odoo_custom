@@ -1,6 +1,6 @@
 
-from odoo import api, fields, models
-
+from odoo import api, fields, models, _
+from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 import logging
 
 
@@ -11,11 +11,43 @@ class Partner(models.Model):
     
     _inherit = 'res.partner'
 
-    passport_img = fields.Binary("Scanned Passport", attachment=True,
-        help="This field holds the scanned passport",)
     gender = fields.Selection([('male', 'Male'),('female', 'Female')], string="Gender", default='male', required=True)
     dtof_birth = fields.Date(string='Date of Birth')
     passport_no = fields.Char(string='Passport Number')
     passport_exp = fields.Date(string='Passport Validity')
-    
+    passport_issued = fields.Date(string='Passport Issued Date')
+    document_history = fields.One2many('partner.document.history', 'partner_id', string='Document Histories')
+    passport_img = fields.Binary(compute='get_passport', string='Passport', store=True)
+    reseller_id = fields.Many2one('res.partner', string='Reseller')
 
+    @api.one
+    @api.depends('document_history', 'document_history.doc')
+    def get_passport(self):
+        found = None, None
+        for history in self.document_history:
+            if 'passport' or 'paspor' in history.doc_type.name.lower():
+            	if history.create_date:
+	                if not found[0] or found[0] < history.create_date:
+	                    found = history.create_date, history.doc
+        if found[1]:
+            self.passport_img = found[1]
+    @api.one
+    @api.constrains('passport_no')
+    def _check_passport(self):
+        records = self.search([('passport_no','=', self.passport_no), ('id','!=',self.id)])
+        for rec in records:
+            raise ValidationError(_("This passport number has been used by another person, named: %s" %rec.name))    
+            
+
+
+
+class DocumentHisotry(models.Model):
+    _name = 'partner.document.history'
+    _order = 'create_date desc'
+
+    create_date = fields.Datetime('Created on', index=True, readonly=True)
+    name = fields.Char('Name', required=True)
+    doc_type = fields.Many2one('document.type.config', string='Document Type', required=True)
+    doc = fields.Binary('Attachment', required=True)
+    partner_id = fields.Many2one('res.partner', string='Partner')
+    

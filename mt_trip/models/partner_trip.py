@@ -11,8 +11,8 @@ class Partner(models.Model):
     
     _inherit = 'res.partner'
 
-    trip_id = fields.Many2one('mt.trip', string='Current Trip')
 
+    trip_id = fields.Many2one('mt.trip', string='Current Trip')
 
     @api.model
     def default_get(self,default_fields):
@@ -25,7 +25,5 @@ class Partner(models.Model):
         if receivable:
             res['property_account_receivable_id'] = receivable
         return res
-
-    
 
     

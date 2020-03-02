@@ -18,13 +18,21 @@ class TripExpenses(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency',
         required=True, readonly=True, states={'draft': [('readonly', False)]},
         default=_default_currency, track_visibility='always')
-    amount = fields.Monetary(string='Amount', help='Amount of all paid invoices', store=True, track_visibility='always')
-    expense_type = fields.Selection([('hotel', 'Hotel'),('flight', 'Flight'),('reseller', 'Reseller Payment'), ('other', 'Other')], string='Expense Type', default='hotel', required=True)
+    amount = fields.Monetary(string='Amount', help='Expense Amount', store=True, track_visibility='always')
+    expense_type = fields.Many2one('expense.type.config', string='Expense Type', required=True)
     invoice_id = fields.Many2one('account.invoice', string='Supplier Invoice')
-    ticket_code = fields.Char('Code')
     state = fields.Selection(string='State', related='invoice_id.state', readonly=True)
     trip_id = fields.Many2one('mt.trip', string='Related Trip')
-    people = fields.Integer('Number of People')
+    code = fields.Char('Code', help='Can be either Hotel Code or Flight Code, depending on the Expense Type')
+    personal = fields.Boolean(string='Is Personal Expense?', related='expense_type.personal')
+    partner_id = fields.Many2one('res.partner', string='Customer', domain=[('customer','=', True)])
+    passport_no = fields.Char('Passport No', related='partner_id.passport_no')
+    passport_img = fields.Binary('Scanned Passport', related='partner_id.passport_img')
+    passport_exp = fields.Date('Passport Validity', related='partner_id.passport_exp')
+    passport_issued = fields.Date('Passport Issued', related='partner_id.passport_issued')
+    dtof_birth = fields.Date('Date of Birth', related='partner_id.dtof_birth')
+    trip_id_personal = fields.Many2one('res.partner', string='Customer', domain=[('customer','=', True)])
+
 
     @api.one
     def button_confirm(self):
@@ -70,22 +78,9 @@ class TripExpenses(models.Model):
         return True
 
 
-    @api.one
-    def assign_hotel(self):
-        if self.expense_type == 'hotel':
-            members_to_code = self.trip_id.member_ids.filtered(lambda member: member.hotel_code == '' or member.hotel_code == False)
-            dif =  self.people - len(members_to_code)
-            if dif <= 0:
-                for d in range(0, self.people):
-                    members_to_code[d].hotel_code = self.ticket_code
-                    self.people = 0
-            else:
-                for m in members_to_code:
-                    m.hotel_code = self.ticket_code
-                self.people = dif
-        return True
 
+class PersonalTripExpenses(models.Model):
+    _name = 'personal.trip.expense'
+    _inherit = ['trip.expense']
 
-
-
-
+    trip_id_personal = fields.Many2one('mt.trip')

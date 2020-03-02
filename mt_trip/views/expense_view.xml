@@ -9,21 +9,29 @@
                 <form string="Expenses">
                     <header>
                         <button name="button_confirm" string="Confirm" type="object" attrs="{'invisible': [('state','not in',[False, 'draft', 'open', 'in_payment'])]}" class="oe_highlight"/>
-                        <button name="assign_hotel" string="Assign Hotel" type="object" attrs="{'invisible': ['|', ('state','not in',['paid']), ('expense_type', '!=', 'hotel')]}" class="oe_highlight"/>
                         <field name="state" widget="statusbar" />
                     </header>
                     <sheet>
                         <group>
+                            <field name="personal" invisible="1"/>
                             <group>
                                 <field name="name"/>
-                                <field name="expense_type"/>
                                 <field name="amount"/>
+                                <field name="expense_type" widget="selection"/>
+                                <field name="invoice_id" readonly="1"/>
                             </group>
                             <group>
-                                <field name="ticket_code" attrs="{'invisible': [('expense_type','not in',['hotel'])]}"/>
-                                <field name="people" attrs="{'invisible': [('expense_type','!=','hotel')]}"/>
+                                <field name="passport_no"/>
+                                <field name="passport_exp"/>
+                                <field name="passport_issued"/>
+                                <field name="code"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Passport" attrs="{'invisible': [('personal','=',False)]}">
+                                <field name="passport_img" widget='image' options='{"size": [500, 500]}'/>
+                            </page>
+                        </notebook>
                     </sheet>
                                         
                 </form>

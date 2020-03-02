@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_document_history_manager,mt.customer.partner.document.history.manager,mt_customer.model_partner_document_history,base.group_system,1,1,1,1

@@ -8,6 +8,7 @@
     'depends': ['base','account', 'mt_customer'],
     'data': [
         'data/accounting_data.xml',
+        'data/am_group.xml',
         'data/company_data.xml',
         'views/trip_view.xml',
         'views/invoice_view.xml',
@@ -16,8 +17,6 @@
         'report/remaining_payments.xml',
         'report/report.xml',
         'security/ir.model.access.csv',
-        'data/am_group.xml',
-        
         
     ],
     'demo': [

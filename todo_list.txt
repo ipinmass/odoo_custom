@@ -1,0 +1,40 @@
+Notulensi Meeting AM Tour & Travel (Kamis, 27 Februari 2020)
+  (checked)  1. Filter untuk customer jangan sampe dobel (kalo bisa ada warning).)
+  (checked)  2. Data customer  Ditambahin reseller (reseller melekat pada data customer), data reseller diletakkan di depan. 
+  (checked)  3. Bagian data customer ditambahin issued date di paspor 
+  (checked)  4. Ditambahkan adanya history untuk scan paspor  namun ditampilkan yg paling baru 
+             5. Ditambahkan di menu invoice paid ada tambahan menu untuk pembayaran invoice 
+  (checked)  6. Untuk pembayaran DP ada buktinya juga (upload file)  ngelink ke invoice 
+  (checked)  7. Data customer yang standar seperti KTP, KK selalu melekat di customer. 
+  (checked)  8. Data urutan trip berdasarkan tanggal keberangkatan 
+  (checked)  9. Ada tambahan menu : no, gender,nama, birth date, pasport, issued date, exp date, ada tombol menu untuk melihat paspor 
+             10. Ada tambahan menu PERSONAL EXPENSES setelah members untuk data flight detil ya. List yang muncul seperti file excel AM Tour (Hotel, Flight, Tiket Wisata) 
+             11. Expenses hanya  dapat diakses oleh owner dan accounting 
+  (checked)  12. Tambahan untuk personal expenses bagian hotel (individual expenses)  akan ada list ke bawah ya untuk kode booking setiap hotel dan 
+                 harga (list dapat dirubah-ubah untuk pembagian kamar).  
+             13. Bagian profit summary  ditambahin TAX
+             14. Ditambahin di menu ticket untuk cicilan, kapan bayarannya waktu bayarnya dan bukti transfer untuk setiap cicilan. 
+             15. Menu ticketing ada tambahan pilihan untuk travel insurance  menunya ditambah 
+                 Insurance : Nama customer, ticket type, police number
+  (checked)  16. Menu personal expenses ada tambahan menu untuk pembayaran visa dan asuransi perjalanan  ditambahkan di tipe 
+
+done:
+    1. - Menu Trip : Ada warning jika member yang ditambahkan memiliki nomer passport yang sama dengan yang sudah terdaftar
+       - Menu Customer: Akan ada warning jika medaftarkan customer dengan passport yang sudah ada
+    2. - Done: Reseller ditambahkan lewat menu Customer. Data reseller akan tertarik otomatis di menu trip 
+        (di menu trip tidak lagi bisa menambahkan reseller)
+    3. - Done
+    4. - Done: Terdapat di menu Customer di page "Document History". Tipe document sekarang configurable di menu Configuration -> Document Type
+               Document juga bisa ditambahkan melalui menu Trip yang akan tercatat otomatis di menu Customer
+    5. Need to elaborate further
+    6. Done: Ada pilihan buat upload payment proof ketika mendaftarkan member di menu Trip
+    7. Done.
+    8. Done.
+    9. Done. Dapat dilihat di page "Personal Expense"
+   10. Done. Need to double check
+   11. Bisa dengan menambahkan group. belum di implementasikan
+   12. Done. Menu Trip -> page "Personal Expense"
+   13. Belum
+   14. Belum
+   15. Belum
+   16. Done. Ditambahkan dengan cara menambahkan list tipe Expense di menu Configuration -> Expense Type

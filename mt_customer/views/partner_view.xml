@@ -8,16 +8,33 @@
             <field name="inherit_id" ref="account.view_partner_property_form"/>
             <!-- <field name="groups_id" eval="[(5,)]"/> -->
             <field name="arch" type="xml">
-
                 <field name="is_company" position="before">
                     <field name="passport_img" widget='image' options='{"size": [500, 500]}' attrs="{'invisible': [('customer', '=', False)]}"/>
                 </field>
                 <field name="type" position="before">
                         <field name="gender"/>
-                        <field name="dtof_birth"/>
-                        <field name="passport_no"/>
-                        <field name="passport_exp"/>
+                        <field name="dtof_birth" attrs="{'required':[('customer', '=', True)]}"/>
+                        <field name="passport_no" attrs="{'required':[('customer', '=', True)]}"/>
+                        <field name="passport_exp" attrs="{'required':[('customer', '=', True)]}"/>
+                        <field name="passport_issued" attrs="{'required':[('customer', '=', True)]}"/>
+                        <field name="reseller_id"/>
                 </field>
+
+                <page name="accounting" position="after">
+                    <page name="documents" string="Document Histories">
+                        <group>
+                            <field name="document_history">
+                                <tree string="Document Histories" editable="bottom">
+                                    <field name="name"/>
+                                    <field name="create_date"/>
+                                    <field name="doc_type"/>
+                                    <field name="doc"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </page>
+                
                 <field name="function" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>
@@ -30,8 +47,33 @@
                 <field name="title" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>
+
+                <page name="internal_notes" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </page>
+                <page name="accounting" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </page>
+
             </field>
         </record>
+        <record id="view_partner_document_history_form" model="ir.ui.view">
+            <field name="name">res.partner.doc.history.form</field>
+            <field name="model">partner.document.history</field>
+            <field name="priority">99</field>
+            <!-- <field name="groups_id" eval="[(5,)]"/> -->
+            <field name="arch" type="xml">
+                <form string="Document Histories">
+                    <group>
+                        <field name="name"/>
+                        <field name="create_date"/>
+                        <field name="doc_type"/>
+                        <field name="doc"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
         <menuitem id="menu_discuss_customer" name="Customers"
             parent="mail.menu_root_discuss"
             action="base.action_partner_customer_form" sequence="10"/>
