@@ -9,7 +9,6 @@
             <field name="user_type_id" ref="account.data_account_type_receivable"/>
             <field name="currency_id" ref="base.IDR"/>
         </record>
-
         <record id="default_customer_account_payable" model="account.account">
             <field name="code">CP01</field>
             <field name="name">Customer Payable</field>
@@ -24,6 +23,21 @@
             <field name="user_type_id" ref="account.data_account_type_receivable"/>
             <field name="currency_id" ref="base.IDR"/>
         </record>
+        <record id="default_tax_account_payable" model="account.account">
+            <field name="code">TP01</field>
+            <field name="name">TAX Payable</field>
+            <field eval="True" name="reconcile"/>
+            <field name="user_type_id" ref="account.data_account_type_payable"/>
+            <field name="currency_id" ref="base.IDR"/>
+        </record>
+        <record id="default_tax_account_receivable" model="account.account">
+            <field name="code">TR01</field>
+            <field name="name">TAX Receivable</field>
+            <field eval="True" name="reconcile"/>
+            <field name="user_type_id" ref="account.data_account_type_receivable"/>
+            <field name="currency_id" ref="base.IDR"/>
+        </record>
+
         <record id="mt_profit_account_id" model="account.account">
             <field name="code">PR01</field>
             <field name="name">Profit Account</field>
@@ -58,5 +72,16 @@
             <field name="bound_payment_method_ids" eval="[(6, 0, [])]"/>
             <field name="outbound_payment_method_ids" eval="[(6, 0, [ref('account.account_payment_method_manual_out')])]"/> 
         </record>
+        <record id="mt_journal_tax_payment_id" model="account.journal">
+            <field name="name">Journal TAX Payment</field>
+            <field name="type">bank</field>
+            <field name="code">JS01</field>
+            <field name="currency_id" ref="base.IDR"/>
+            <field name="default_debit_account_id" ref="mt_trip.default_tax_account_receivable"/>
+            <field name="default_credit_account_id" ref="mt_trip.default_tax_account_payable"/>
+            <field name="bound_payment_method_ids" eval="[(6, 0, [])]"/>
+            <field name="outbound_payment_method_ids" eval="[(6, 0, [ref('account.account_payment_method_manual_out')])]"/> 
+        </record>
+
     </data>
 </odoo>

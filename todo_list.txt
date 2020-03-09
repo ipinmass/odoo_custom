@@ -26,7 +26,7 @@ done:
     3. - Done
     4. - Done: Terdapat di menu Customer di page "Document History". Tipe document sekarang configurable di menu Configuration -> Document Type
                Document juga bisa ditambahkan melalui menu Trip yang akan tercatat otomatis di menu Customer
-    5. Need to elaborate further
+    5. ?
     6. Done: Ada pilihan buat upload payment proof ketika mendaftarkan member di menu Trip
     7. Done.
     8. Done.
@@ -34,7 +34,7 @@ done:
    10. Done. Need to double check
    11. Bisa dengan menambahkan group. belum di implementasikan
    12. Done. Menu Trip -> page "Personal Expense"
-   13. Belum
-   14. Belum
-   15. Belum
+   13. Done
+   14. Done Waktu pembayaran bisa diwakilkan dengan Due Date yang ada di invoice. Date Due dapat diset otomatis dengan memilih Payment Term pada 
+   15. Done Khususu untuk expense type "Insurance", akan ada informasi "Policy Number" yang muncul otomatis untuk diisi.
    16. Done. Ditambahkan dengan cara menambahkan list tipe Expense di menu Configuration -> Expense Type

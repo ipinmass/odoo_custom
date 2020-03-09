@@ -1,4 +1,3 @@
-
 from odoo import api, fields, models, _
 from odoo.addons import decimal_precision as dp
 from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
@@ -7,13 +6,14 @@ from datetime import date
 import logging
 _logger = logging.getLogger(__name__)
 
+
 class Tickets(models.Model):
     _name = 'mt.ticket'
 
     @api.model
     def _default_currency(self):
-        
         return self.env.user.company_id.currency_id
+
 
     name = fields.Char('Name', required=True)
     state = fields.Selection([('draft', 'Draft'),('done', 'Done')], default='draft', readonly=True)
@@ -24,13 +24,20 @@ class Tickets(models.Model):
     hotel_name = fields.Char('Hotel Name')
     booking_code = fields.Char('Booking Code')
     partner_id = fields.Many2one('res.partner', string='Customer', domain=[('customer', '=', 'True')], required=True)
+    payment_type = fields.Selection([('full', 'Full'),('credit', 'Credit')], default='full')
+    # installment_times = fields.Integer('Installment Times', default=1)
+    expense_ids = fields.One2many('trip.expense', 'ticket_id', string='Expenses')
+    invoice_ids = fields.One2many('account.invoice', 'ticket_id', string='Sale Invoice')
     sale_price = fields.Monetary('Sale Price', default=0.0)
     purchase_price = fields.Monetary('Purchase Price', default=0.0)
-    invoice_id = fields.Many2one('account.invoice', string='Sale Invoice', readonly=True)
-    payment_id = fields.Many2one('account.payment', srting='Purchase Payment', readonly=True)
     currency_id = fields.Many2one('res.currency', string='Currency',
         required=True, readonly=True, states={'draft': [('readonly', False)]},
         default=_default_currency, track_visibility='always')
+    is_purchased = fields.Boolean('Is Purchased', default=False)
+    is_invoice_created = fields.Boolean('Invoice Crated', default=False)
+    payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms', oldname='payment_term',
+        readonly=True, states={'draft': [('readonly', False)]}, help="Date Due is calculated based on selected Payment Term.\
+                                                                      Keeping this value empty means a direct payment.")
 
 
     @api.multi
@@ -84,50 +91,75 @@ class Tickets(models.Model):
         qty = 1
 
         inv_obj = self.env['account.invoice']
-        
         _dp = 1
-        
-        dp_amt = self.sale_price
-        origin = 'Ticket - %s - %s ' %(self.ticket_type, self.partner_id.name)
-        inv_vals = self._prepare_invoice(origin=origin)
-        inv_created = inv_obj.create(inv_vals)
-        inv_line_vals = self._prepare_invoice_line(qty, dp_amt, origin=origin)
-        inv_line_vals.update({'invoice_id': inv_created.id})
-        self.env['account.invoice.line'].create(inv_line_vals)
-        self.invoice_id = inv_created
+        if self.payment_type == 'credit':
+            line_no = 1
+            computed = self.payment_term_id.compute(self.sale_price)[0]
+            for (date, amt) in computed:
 
-        if inv_created and self.payment_id:
-            self.state = 'done'
-        
-
+            # for t in range(0, self.installment_times):
+            #     amt = self.sale_price/self.installment_times
+                origin = 'Ticket - %s - %s ' %(self.ticket_type, self.partner_id.name)
+                inv_vals = self._prepare_invoice(origin=origin)
+                
+                inv_vals.update({
+                    'name': 'Invoice - %s - %s' % (str(line_no+1), self.name),
+                    'ticket_id': self.id,
+                    'date_invoice': fields.Date.today(),
+                    'payment_term_id': self.payment_term_id and self.payment_term_id.id or False,
+                    'date_due': date,
+                    })
+                _logger.info('date, amt======== %s', ( computed))
+                inv_created = inv_obj.create(inv_vals)
+                inv_line_vals = self._prepare_invoice_line(qty, amt, origin=origin)
+                inv_line_vals.update({'invoice_id': inv_created.id})
+                self.env['account.invoice.line'].create(inv_line_vals)
+                inv_line_vals = self._prepare_invoice_line(qty, amt, origin=origin)
+                line_no +=1
+        else:
+            amt = self.sale_price
+            origin = 'Ticket - %s - %s ' %(self.ticket_type, self.partner_id.name)
+            inv_vals = self._prepare_invoice(origin=origin)
+            inv_vals.update({
+                    'name': 'Invoice - %s' % (self.name),
+                    'ticket_id': self.id,
+                    'date_invoice': fields.Date.today(),
+                    'payment_term_id': self.payment_term_id and self.payment_term_id.id or False,
+                    'date_due': fields.Date.today()
+                    })
+            inv_created = inv_obj.create(inv_vals)
+            inv_line_vals = self._prepare_invoice_line(qty, amt, origin=origin)
+            inv_line_vals.update({'invoice_id': inv_created.id})
+            self.env['account.invoice.line'].create(inv_line_vals)
+            
+        # self.is_invoice_created = True
         return True
 
 
     @api.one
     def make_purchase(self):
         partner_id = self.env.ref('mt_ticket.ticket_supplier_generic_ma_travel').id
-        if self.purchase_price > 0 and partner_id:
-            description = 'Ticket Purchase - ' + self.name
-            payment_vals = {
-                 'name': 'Payment - %s' %(self.name),
-                 'amount': self.purchase_price,
-                 'communication': False,
-                 'currency_id': self.env.user.company_id.currency_id.id,
-                 'description': description,
-                 'destination_journal_id': False,
-                 'journal_id': self.env.ref('mt_trip.mt_journal_payment_id').id,
-                 'message_attachment_count': 0,
-                 'partner_bank_account_id': False,
-                 'partner_id': partner_id,
-                 'partner_type': 'supplier',
-                 'payment_date': date.today(),
-                 'payment_method_id': self.env.ref('account.account_payment_method_manual_out').id,
-                 'payment_type': 'outbound',
+        
+        expense_obj = self.env['trip.expense']
+        expense_vals = {
+            'name': 'Ticket Purchasing - %s ' %(self.name),
+            'amount': self.purchase_price,
+            'expense_type': self.env['expense.type.config'].search([('name','ilike', self.ticket_type)]).id,
+            'ticket_id': self.id
+        }
+        _logger.info('expense_vals============ %s', expense_vals)
+        created_expense = expense_obj.create(expense_vals)
+        created_expense.button_confirm()
+        self.is_purchased = True
 
-            }
-
-            self.payment_id = self.env['account.payment'].create(payment_vals)
-            
-        if self.payment_id and self.invoice_id:
-            self.state = 'done'
         return True
+
+    @api.one
+    def make_done(self):
+        if self.is_purchased and self.is_invoice_created:
+            if not all ([inv.state == 'paid' for inv in self.invoice_ids]):
+                raise UserError(_('This ticket still has unpaid Invoice(s). Make sure to mark all Invoices as paid!'))
+            if not all ([exp.state == 'paid' for exp in self.expense_ids]):
+                raise UserError(_('This ticket still has unpaid Expense(s). Make sure to mark all Expenses as paid!'))
+        self.state = 'done'
+            

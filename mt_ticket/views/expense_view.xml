@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="expense_ticket_view_form" model="ir.ui.view">
+            <field name="name">trip.ticket.view.form</field>
+            <field name="model">trip.expense</field>
+            <field name="inherit_id" ref="mt_trip.expense_view_form"/>
+            <field name="priority">2</field>
+            <field name="arch" type="xml">
+                    <field name="trip_id" position="after">
+                        <field name="ticket_id" invisible="1"/>
+                    </field>
+                    <xpath expr="//button[@name='button_confirm']" position="attributes">
+                        <attribute name="context">"{'trip_id': trip_id, 'ticket_id': ticket_id}"</attribute>
+                    </xpath>
+                    <field name="expense_type" position="after">
+                        <field name="expense_type_name" invisible="1"/>
+                        <field name="policy_number" attrs="{'invisible': [('expense_type_name', '!=', 'Insurance')]}"/>
+                    </field>
+                
+            </field>
+        </record>
+    </data>
+</odoo>

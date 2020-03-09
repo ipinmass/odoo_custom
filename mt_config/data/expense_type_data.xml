@@ -15,9 +15,17 @@
             <field name="name">Insurance</field>
             <field name="sequence" eval="3"/>
         </record>
+        <record id="id_expense_type_tax" model="expense.type.config">
+            <field name="name">Tax</field>
+            <field name="sequence" eval="4"/>
+        </record>
+        <record id="id_expense_type_reseller" model="expense.type.config">
+            <field name="name">Reseller</field>
+            <field name="sequence" eval="4"/>
+        </record>
         <record id="id_expense_type_other" model="expense.type.config">
             <field name="name">Other</field>
-            <field name="sequence" eval="4"/>
+            <field name="sequence" eval="99"/>
         </record>
     </data>
 </odoo>

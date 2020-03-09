@@ -17,9 +17,7 @@
             			<field name="payment_prove_img" widget='image' options='{"size": [500, 500]}' attrs="{'invisible': [('is_image','=',False)]}"/>
             		</page>
             	</xpath>
-                <field name="payment_term_id" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </field>
+                
                 <field name="cash_rounding_id" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>

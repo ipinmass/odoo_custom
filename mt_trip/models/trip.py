@@ -18,12 +18,13 @@ class Trip(models.Model):
         return self.env.user.company_id.currency_id
 
 
-    name = fields.Char(string="Name", required=True)
-    planned_date = fields.Date(string='Planned Date')
-    admin = fields.Many2one('res.partner', string='Admin', domain=[('customer','=', False)])
-    state = fields.Selection([('open', 'Open'),('progress', 'Progress'),('done', 'Done'), ('cancel', 'Cancel')], default='open')
-    member_ids = fields.One2many('trip.member', 'trip_id', string='Members')
-    trip_template = fields.Many2one('trip.template', 'Trip Template', domain=[('active','=', True)])
+    name = fields.Char(string="Name", required=True, )
+    planned_date = fields.Date(string='Planned Date',)
+    admin = fields.Many2one('res.partner', string='Admin', domain=[('customer','=', False)], readonly=True, )
+    state = fields.Selection([('open', 'Open'),('progress', 'Progress'),('done', 'Done'), ('cancel', 'Cancel')], 
+                              default='open', index=True, track_visibility='onchange', copy=False)
+    member_ids = fields.One2many('trip.member', 'trip_id', string='Members',)
+    trip_template = fields.Many2one('trip.template', 'Trip Template', domain=[('active','=', True)],)
     fare = fields.Float('Fare')
     total_expenses = fields.Monetary(string='Total Expenses',
         store=True, readonly=True, compute='_compute_amount', track_visibility='always')
@@ -34,7 +35,7 @@ class Trip(models.Model):
     profit_loss = fields.Monetary(string='Profit/Loss', help='Computed only based on paid invoices (expenses are always considered confirmed)',
         store=True, readonly=True, compute='_compute_amount', track_visibility='always')
     currency_id = fields.Many2one('res.currency', string='Currency',
-        required=True, readonly=True, states={'draft': [('readonly', False)]},
+        required=True, readonly=True,
         default=_default_currency, track_visibility='always')
     expense_ids = fields.One2many('trip.expense', 'trip_id', string='Expenses')
     personal_expenses = fields.One2many('trip.expense', 'trip_id_personal', string='Expenses')
@@ -75,7 +76,13 @@ class Trip(models.Model):
 
     @api.multi
     def action_close_registration(self):
-        return self.write({'state': 'progress'})
+        self.state = 'progress'
+        return True
+
+    @api.multi
+    def make_done(self):
+        self.state = 'done'
+        return True
 
     @api.multi
     def _get_report_base_filename(self):
@@ -103,13 +110,19 @@ class TripMember(models.Model):
     reseller_fee = fields.Float(string='Reseller Fee', digits=dp.get_precision('Product Price'))
     discount = fields.Float('Discount (%)')
     installment_times = fields.Integer('Installment Times', required=True, default=1)
+    payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms', oldname='payment_term',
+         help="Date Due is calculated based on selected Payment Term.\
+                              Keeping this value empty means a direct payment. Assign multiple\
+                              lines of payment terms on the Payment Terms configuration to \
+                              issue multiple invoices")
+
     payment_type = fields.Selection([('full', 'Full'), ('credit', 'Credit')], string='Payment Type', default='full')
     is_reseller_paid = fields.Boolean('Reseller Paid', readonly=True, default=False)
     visa_appointment_date = fields.Date('VISA Appointment Date')
     hotel_code = fields.Char('Hotel Code')
     flight_code = fields.Char('Flight Code')
     dp_proof = fields.Binary('DP proof')
-    sequence = fields.Integer('Sequence')
+    sequence = fields.Integer('No.')
     show_pay_reseller = fields.Boolean('Show Pay Reseller', default=False, compute='_check_show_reseller')
         
 
@@ -202,16 +215,22 @@ class TripMember(models.Model):
         # inv_created.action_invoice_open()
         origin = 'INV - %s - %s ' %(self.partner_id.name, self.trip_id.name)
         amt_inv = round((self.trip_id.fare-self.dp_amount)/self.installment_times, _dp)
-        for item in range(1, self.installment_times + 1):
-            origin = 'INV - %s - %s - %s ' %(item, self.partner_id.name, self.trip_id.name)
-            inv_vals = self._prepare_invoice(origin=origin)
-            inv_vals['origin'] = inv_vals['origin'] + ' - ' + str(item)
-            inv_created = inv_obj.create(inv_vals)
-            inv_line_vals = self._prepare_invoice_line(qty, amt_inv, origin=origin)
-            inv_line_vals.update({'invoice_id': inv_created.id})
-            self.env['account.invoice.line'].create(inv_line_vals)
-            inv_created.update({'member_id': self.id})
 
+        # for item in range(1, self.installment_times + 1):
+        if self.payment_term_id and self.payment_type == 'credit':
+            line_no = 1
+            for date, amt in self.payment_term_id.compute(self.trip_id.fare - self.dp_amount)[0]:
+
+                origin = 'INV - %s - %s - %s ' %(str(line_no), self.partner_id.name, self.trip_id.name)
+                inv_vals = self._prepare_invoice(origin=origin)
+                inv_vals['origin'] = inv_vals['origin'] + ' - ' + str(line_no)
+                inv_vals.update({'date_due': date, 'payment_term_id': self.payment_term_id.id})
+                inv_created = inv_obj.create(inv_vals)
+                inv_line_vals = self._prepare_invoice_line(qty, amt, origin=origin)
+                inv_line_vals.update({'invoice_id': inv_created.id})
+                self.env['account.invoice.line'].create(inv_line_vals)
+                inv_created.update({'member_id': self.id})
+                line_no += 1
         return True
 
 
@@ -263,11 +282,12 @@ class TripMember(models.Model):
     def action_pay_reseller(self):
         if not self.reseller or self.reseller_fee <= 0.0:
             return True
+        reseller_exp_type = self.env.ref('mt_config.id_expense_type_reseller').id
         expense_obj = self.env['trip.expense']
         expense_vals = {
             'name': 'Reseller Payment - %s - %s ' %(self.reseller.name, self.trip_id.name),
             'amount': self.reseller_fee,
-            'expense_type': 'reseller',
+            'expense_type': reseller_exp_type,
             'trip_id': self.trip_id.id
         }
         created_expense = expense_obj.create(expense_vals)

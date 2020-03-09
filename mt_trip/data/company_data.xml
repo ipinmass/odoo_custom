@@ -2,11 +2,19 @@
 <odoo>
     <data>
         <record id="supplier_generic_ma_travel" model="res.partner">
-        	<field name="name">Generic Supplier MA</field>
-        	<field name="property_account_receivable_id" ref="mt_trip.default_customer_account_receivable"/>
-        	<field name="property_account_payable_id" ref="mt_trip.default_customer_account_payable"/>
-        	<field name="customer" eval="False" />
-        	<field name="supplier" eval="True" />
+            <field name="name">Generic Supplier MA</field>
+            <field name="property_account_receivable_id" ref="mt_trip.default_customer_account_receivable"/>
+            <field name="property_account_payable_id" ref="mt_trip.default_customer_account_payable"/>
+            <field name="customer" eval="False" />
+            <field name="supplier" eval="True" />
+        </record>
+
+        <record id="supplier_tax_generic_ma_travel" model="res.partner">
+            <field name="name">Generic Tax MA</field>
+            <field name="property_account_receivable_id" ref="mt_trip.default_tax_account_receivable"/>
+            <field name="property_account_payable_id" ref="mt_trip.default_tax_account_payable"/>
+            <field name="customer" eval="False" />
+            <field name="supplier" eval="True" />
         </record>
         
     </data>

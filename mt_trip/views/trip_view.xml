@@ -9,24 +9,25 @@
             <field name="arch" type="xml">
                 <form string="Trip">
                     <header>
-                        <button name="action_close_registration" type="object" state="open" string="Close Registration" class="oe_highlight" />
-                        <field name="state" widget="statusbar" />
+                        <button name="action_close_registration" type="object" state="open" string="Close Registration" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'open')]}"/>
+                        <button name="make_done" type="object" string="Make Done" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'progress')]}"/>
+                        <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
                         <group>
                             <group>
-                                <field name="name"/>
-                                <field name="trip_template"/>
-                                <field name="fare"/>
+                                <field name="name" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
+                                <field name="trip_template" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
+                                <field name="fare" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
                             </group>
                             <group>
-                                <field name="planned_date"/>
-                                <field name="admin"/>
+                                <field name="planned_date" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
+                                <field name="admin" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
                             </group>
                         </group>
                         <notebook>
-                            <page string="Members">
-                                <field name="member_ids">
+                            <page string="Members" >
+                                <field name="member_ids" attrs="{'readonly': [('state', 'in', ['done','cancel', 'progress'])]}">
                                     <tree>
                                         <field name="sequence"/>
                                         <field name="partner_id"/>
@@ -42,25 +43,28 @@
                                 </field>
                             </page>
                             <page string="Personal Expenses">
-                                <field name="personal_expenses">
+                                <field name="id" invisible="1"/>
+                                <field name="personal_expenses" context="{'personal': True, 'trip_id': id}" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}">
                                     <tree string="General Expenses" editable="bottom">
+                                        <field name="personal" invisible="1"/>
                                         <field name="name"/>
                                         <field name="expense_type" widget="selection" domain="[('personal', '=', True)]"/>
                                         <field name="partner_id"/>
                                         <field name="dtof_birth"/>
-                                        <field name="code"/>
                                         <field name="passport_no"/>
                                         <field name="passport_exp"/>
                                         <field name="passport_issued"/>
                                         <field name="amount"/>
+                                        <field name="code"/>
                                         <field name="state"/>
                                     </tree>
                                 </field>
                             
                             </page>
                             <page string="General Expenses">
-                                <field name="expense_ids">
-                                    <tree string="Expenses" editable="bottom">
+                                <field name="expense_ids" context="{'personal': False}" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}">
+                                    <tree string="Expenses">
+                                        <field name="personal" invisible="1"/>
                                         <field name="name"/>
                                         <field name="expense_type" widget="selection" domain="[('personal', '=', False)]"/>
                                         <field name="amount"/>
@@ -120,7 +124,7 @@
                             <field name="dp_proof"/>
                             <field name="discount"/>
                             <field name="payment_type"/>
-                            <field name="installment_times" attrs="{'invisible': [('payment_type', '=', 'full')]}"/>
+                            <field name="payment_term_id" attrs="{'invisible': [('payment_type', '=', 'full')]}"/>
                             <field name="visa_appointment_date"/>
                             <field name="hotel_code"/>
                             <field name="flight_code"/>
@@ -149,6 +153,7 @@
                                 <field name="invoice_ids">
                                     <tree string="Invoices">
                                         <field name="name"/>
+                                        <field name="amount_total"/>
                                         <field name="state"/>
                                     </tree>
                                 </field>

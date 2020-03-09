@@ -17,6 +17,7 @@ class Report(models.TransientModel):
     income = fields.Monetary(string='In-Payment Amount', readonly=True)
     outcome = fields.Monetary(string='Out-Payment Amount', readonly=True)
     balance = fields.Monetary(sting='Balance', readonly=True)
+    total_tax = fields.Monetary('Total Tax Expenses', readonly=True, help='Counted from all Expenses with type Tax')
     dt_from = fields.Date(string='Date From')
     dt_to = fields.Date(string='Date To')
     show_report = fields.Boolean('Refresh Report', default=False)
@@ -35,32 +36,40 @@ class Report(models.TransientModel):
                 acc_out AS (SELECT id AS id from account_account WHERE code = 'CP01'),
 
                 incoming AS (
-                SELECT aml.account_id, sum(aml.credit) AS cr
+                
+                SELECT 1 as col1, aml.account_id, sum(aml.credit) AS cr
                 FROM account_move_line aml
                 JOIN acc_in ON acc_in.id=aml.account_id
                 JOIN account_move am ON aml.move_id=am.id AND am.state = 'posted'
 
-                GROUP BY account_id
+                GROUP BY account_id, col1
 
                 ),
 
                 outcoming AS (
-                SELECT aml.account_id, sum(aml.debit) AS dr
+               
+                SELECT 1 as col1, aml.account_id, sum(aml.debit) AS dr
                 FROM account_move_line aml
                 JOIN acc_out ON acc_out.id=aml.account_id
                 JOIN account_move am ON aml.move_id = am.id AND am.state = 'posted'
 
-                GROUP BY account_id
+                GROUP BY account_id,col1
 
                 )
-                SELECT incoming.cr AS income, outcoming.dr AS outcome, (incoming.cr - outcoming.dr) AS balance FROM incoming, outcoming
+                SELECT incoming.cr AS income, outcoming.dr AS outcome, (incoming.cr - outcoming.dr) AS balance FROM incoming FULL JOIN outcoming ON incoming.col1=outcoming.col1
         '''
         self.env.cr.execute(_sql)
         res = self.env.cr.dictfetchall()
-        _logger.info('================= cr execute, %s', res)
         balance = res and res[0].get('balance', 0.0) or 0.0
         income = res and res[0].get('income', 0.0) or 0.0
         outcome = res and res[0].get('outcome', 0.0) or 0.0
         self.income = income
         self.outcome = outcome
-        self.balance = balance
+        
+        _sql_tax = _sql.replace('CR01', 'TR01').replace('CP01','TP01')
+        self.env.cr.execute(_sql_tax)
+        res = self.env.cr.dictfetchall()
+        total_tax = res and res[0].get('outcome', 0.0) or 0.0
+        self.total_tax = total_tax
+        self.balance = balance - total_tax
+

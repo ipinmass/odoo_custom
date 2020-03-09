@@ -15,6 +15,7 @@
                             <group>
                                 <field name="income"/>
                                 <field name="outcome"/>
+                                <field name="total_tax"/>
                                 <field name="balance"/>
                                 <field name="dt_from" invisible="1"/>
                                 <field name="dt_to" invisible="1"/>

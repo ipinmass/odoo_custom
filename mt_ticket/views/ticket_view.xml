@@ -9,13 +9,16 @@
             <field name="arch" type="xml">
                 <form string="Tickets">
                     <header>
-                        <button name="make_sale" type="object" state="draft" string="Make Sale" class="oe_highlight" attrs="{'invisible': [('invoice_id', '!=', False)]}"/>
-                        <button name="make_purchase" type="object" state="draft" string="Make Purchase" class="oe_highlight" attrs="{'invisible': [('payment_id', '!=', False)]}"/>
+                        <button name="make_sale" type="object" state="draft" string="Make Sale" class="oe_highlight" attrs="{'invisible': ['|',('is_invoice_created', '=', True),('is_purchased', '=', False)]}"/>
+                        <button name="make_purchase" type="object" state="draft" string="Make Purchase" class="oe_highlight" attrs="{'invisible': [('is_purchased', '!=', False)]}"/>
                         <field name="state" widget="statusbar" />
+                        <button name="make_done" type="object" state="draft" string="Make Done" class="oe_highlight" attrs="{'invisible': ['|', '|',('is_invoice_created', '=', False),('is_purchased', '=', False),('state', '!=', 'draft')]}"/>
+
                     </header>
                     <sheet>
                         <group>
                             <group>
+                                <field name="id" invisible="1"/>
                                 <field name="name"/>
                                 <field name="partner_id"/>
                                 <field name="ticket_type"/>
@@ -27,10 +30,44 @@
                             </group>
                             <group>
                                 <field name="sale_price"/>
+                                <field name="payment_type"/>
+                                <field name="payment_term_id" attrs="{'invisible': [('payment_type', '!=', 'credit')], 'required': [('payment_type', '=', 'credit')]}"/>
                                 <field name="purchase_price"/>
-                                <field name="invoice_id"/>
-                                <field name="payment_id"/>
+                                
+                                <field name="is_purchased" invisible="1"/>
+                                <field  name="is_invoice_created" invisible="1"/>
                             </group>
+                        </group>
+                    
+                        <group>
+                            <notebook>
+                                <page string="Expenses">
+                                    <field name="expense_ids" context="{'ticket_id': id}">
+                                        <tree string="Expenses">
+                                            <field name="personal" invisible="1"/>
+                                            <field name="name"/>
+                                            <field name="expense_type" widget="selection" domain="[('personal', '=', False)]"/>
+                                            <field name="amount"/>
+                                            <field name="state"/>
+                                            <field name="insurance_invoiced" invisible="1"/>
+                                            <field name="expense_type_name" invisible="1"/>
+                                            <field name="ticket_id" invisible="1"/>
+                                            <button name="issue_invoice_from_model" type="object" string="Create Insurance Invoice" class="oe_highlight" attrs="{'invisible': ['|',('expense_type_name','!=', 'Insurance'),('insurance_invoiced','=', True)]}" context="{'ticket_id': ticket_id}"/>
+                                        </tree>
+                                    </field>
+                                </page>
+                                <page string="Invoices">
+                                    <field name="invoice_ids">
+                                        <tree string="Invoices">
+                                            <field name="name"/>
+                                            <field name="amount_total"/>
+                                            <field name="state"/>
+                                            <field name="date_due"/>
+                                        </tree>
+                                    </field>
+                                </page>
+
+                            </notebook>
                         </group>
                     </sheet>
                 </form>

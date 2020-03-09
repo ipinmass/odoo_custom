@@ -1,11 +1,11 @@
 {
-    'name': 'MA Trip',
+    'name': 'AM Trip',
     'version': '10.0',
     'category': 'Customer',
     'sequence': 999,
-    'summary': 'MA TRIP',
+    'summary': 'AM TRIP',
     'description': "",
-    'depends': ['base','account', 'mt_customer'],
+    'depends': ['base', 'mt_config', 'account', 'mt_customer'],
     'data': [
         'data/accounting_data.xml',
         'data/am_group.xml',

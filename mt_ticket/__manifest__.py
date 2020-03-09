@@ -9,6 +9,7 @@
     'data': [
         'data/ticket_generic_supplier.xml',
         'views/ticket_view.xml',
+        'views/expense_view.xml',
         'security/ir.model.access.csv'
         
         
