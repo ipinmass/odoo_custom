@@ -3,7 +3,7 @@
     <!-- <data noupdate="1"> -->
     <data>
         <record id="ticket_supplier_generic_ma_travel" model="res.partner">
-            <field name="name">Generic Ticekt Supplier MA</field>
+            <field name="name">Generic Ticekt Supplier AM</field>
             <field name="property_account_receivable_id" ref="mt_trip.default_customer_account_receivable"/>
             <field name="property_account_payable_id" ref="mt_trip.default_customer_account_payable"/>
             <field name="customer" eval="False" />
