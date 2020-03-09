@@ -5,7 +5,7 @@
     'sequence': 999,
     'summary': 'MT Tickets',
     'description': "",
-    'depends': ['base','account', 'mt_customer', 'mt_trip'],
+    'depends': ['base', 'mt_config', 'account', 'mt_customer', 'mt_trip'],
     'data': [
         'data/ticket_generic_supplier.xml',
         'views/ticket_view.xml',

@@ -1,11 +1,11 @@
 {
-    'name': 'MA Reporting',
+    'name': 'AM Reporting',
     'version': '1.0',
     'category': 'Reporting',
     'sequence': 99,
-    'summary': 'MA Reporting',
+    'summary': 'AM Reporting',
     'description': "",
-    'depends': ['account', 'mt_trip'],
+    'depends': ['base', 'mt_config', 'account', 'mt_customer', 'mt_trip', 'mt_ticket'],
     'data': [
         'views/reporting_view.xml',
         

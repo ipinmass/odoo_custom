@@ -5,7 +5,7 @@
     'sequence': 99,
     'summary': 'Customer Additional Information',
     'description': "",
-    'depends': ['account'],
+    'depends': ['base', 'mt_config', 'account', ],
     'data': [
         'views/partner_view.xml',
         'security/ir.model.access.csv',
