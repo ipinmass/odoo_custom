@@ -33,7 +33,7 @@ done:
     9. Done. Dapat dilihat di page "Personal Expense"
    10. Done. Need to double check
    11. Bisa dengan menambahkan group. belum di implementasikan
-   12. Done. Menu Trip -> page "Personal Expense"
+   12. Done. Menu Trip -> page "Personal Expense"; Trip member udah bisa di drag untuk mengubah urutan
    13. Done
    14. Done Waktu pembayaran bisa diwakilkan dengan Due Date yang ada di invoice. Date Due dapat diset otomatis dengan memilih Payment Term pada 
    15. Done Khususu untuk expense type "Insurance", akan ada informasi "Policy Number" yang muncul otomatis untuk diisi.

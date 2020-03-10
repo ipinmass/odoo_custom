@@ -29,7 +29,7 @@
                             <page string="Members" >
                                 <field name="member_ids" attrs="{'readonly': [('state', 'in', ['done','cancel', 'progress'])]}">
                                     <tree>
-                                        <field name="sequence"/>
+                                        <field name="sequence" widget="handle"/>
                                         <field name="partner_id"/>
                                         <field name="invoice_ids" invisible="1"/>
                                         <field name="document_ids" invisible="1"/>
@@ -93,6 +93,7 @@
             <field name="arch" type="xml">
                 <tree string="Trip">
                    <field name="name"/>
+                   <field name="planned_date"/>
                </tree>
             </field>
         </record>

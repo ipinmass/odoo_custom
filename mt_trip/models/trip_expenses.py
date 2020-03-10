@@ -38,14 +38,12 @@ class TripExpenses(models.Model):
     @api.onchange('expense_type')
     def _onchange_expense_type(self):
         context = self._context or {}
-        _logger.info('expense_type context ============== %s', self._context)
         if context.get('trip_id'):
             query = '''
                 SELECT partner_id FROM trip_member WHERE trip_id=%s
             ''' %context.get('trip_id')
             self.env.cr.execute(query)
             res = self.env.cr.dictfetchall()
-            _logger.info('res ============== %s', res)
 
         if context.get('personal', None) is not None:
             domain = {'expense_type': [('personal', '=', context.get('personal'))]}

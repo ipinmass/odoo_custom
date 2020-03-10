@@ -52,7 +52,7 @@ class Trip(models.Model):
                 raise ValidationError(_("The member is already registered with passport: %s. Existed: %s. Attempting to add: %s"\
                     %(passport,passports.get(passport), member.partner_id.name)))
             else:
-                raise ValidationError(_("This member has no passport data. Name: %s" %member.partner_id.name))    
+                raise ValidationError(_("This member has no passport data. Name: %s" %member.partner_id.name))
 
     @api.one
     @api.depends('member_ids.invoice_ids.state', 'member_ids.invoice_ids.amount_total', 'expense_ids.amount')
@@ -200,10 +200,12 @@ class TripMember(models.Model):
         # handle the down payment part
         dp_amt = self.dp_amount
         if dp_amt > 0.0:
+            if not self.dp_proof:
+                raise ValidationError(_("Down Payment proof is required"))
             origin = 'DP - %s - %s ' %(self.partner_id.name, self.trip_id.name)
             inv_vals = self._prepare_invoice(origin=origin)
             inv_vals.update({'name': 'DP - ' + self.trip_id.name})
-            inv_vals.update({'dp_proof': self.dp_proof or None})
+            inv_vals.update({'payment_prove_img': self.dp_proof})
             inv_created = inv_obj.create(inv_vals)
             inv_line_vals = self._prepare_invoice_line(qty, dp_amt, origin=origin)
             # omit discount from down payment invoice
@@ -211,19 +213,12 @@ class TripMember(models.Model):
             inv_line_vals.update({'invoice_id': inv_created.id})
             self.env['account.invoice.line'].create(inv_line_vals)
             inv_created.update({'member_id': self.id})
-        # make the invoice paid
-        # inv_created.action_invoice_open()
-        origin = 'INV - %s - %s ' %(self.partner_id.name, self.trip_id.name)
-        amt_inv = round((self.trip_id.fare-self.dp_amount)/self.installment_times, _dp)
 
-        # for item in range(1, self.installment_times + 1):
         if self.payment_term_id and self.payment_type == 'credit':
             line_no = 1
             for date, amt in self.payment_term_id.compute(self.trip_id.fare - self.dp_amount)[0]:
-
                 origin = 'INV - %s - %s - %s ' %(str(line_no), self.partner_id.name, self.trip_id.name)
                 inv_vals = self._prepare_invoice(origin=origin)
-                inv_vals['origin'] = inv_vals['origin'] + ' - ' + str(line_no)
                 inv_vals.update({'date_due': date, 'payment_term_id': self.payment_term_id.id})
                 inv_created = inv_obj.create(inv_vals)
                 inv_line_vals = self._prepare_invoice_line(qty, amt, origin=origin)
@@ -231,6 +226,16 @@ class TripMember(models.Model):
                 self.env['account.invoice.line'].create(inv_line_vals)
                 inv_created.update({'member_id': self.id})
                 line_no += 1
+        else:
+            origin = 'INV - %s - %s ' %(self.partner_id.name, self.trip_id.name)
+            inv_vals = self._prepare_invoice(origin=origin)
+            inv_created = inv_obj.create(inv_vals)
+            amt = self.trip_id.fare - self.dp_amount
+            inv_line_vals = self._prepare_invoice_line(qty, amt, origin=origin)
+            inv_line_vals.update({'invoice_id': inv_created.id})
+            self.env['account.invoice.line'].create(inv_line_vals)
+            inv_created.update({'member_id': self.id})
+
         return True
 
 
