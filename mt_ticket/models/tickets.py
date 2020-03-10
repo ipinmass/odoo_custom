@@ -103,7 +103,7 @@ class Tickets(models.Model):
                 inv_vals = self._prepare_invoice(origin=origin)
                 
                 inv_vals.update({
-                    'name': 'Invoice - %s - %s' % (str(line_no+1), self.name),
+                    'name': 'Invoice - %s - %s' % (str(line_no), self.name),
                     'ticket_id': self.id,
                     'date_invoice': fields.Date.today(),
                     'payment_term_id': self.payment_term_id and self.payment_term_id.id or False,
