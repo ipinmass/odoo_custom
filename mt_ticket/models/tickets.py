@@ -132,7 +132,7 @@ class Tickets(models.Model):
             inv_line_vals.update({'invoice_id': inv_created.id})
             self.env['account.invoice.line'].create(inv_line_vals)
             
-        # self.is_invoice_created = True
+        self.is_invoice_created = True
         return True
 
 
