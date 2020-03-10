@@ -7,11 +7,12 @@
     'description': "",
     'depends': ['base'],
     'data': [
+        'data/am_group_config.xml',
+        'data/document_type_data.xml',
+        'data/expense_type_data.xml',
         'views/document_type_view.xml',
         'views/expense_type_view.xml',
         'security/ir.model.access.csv',
-        'data/document_type_data.xml',
-        'data/expense_type_data.xml',
         
         
     ],

@@ -55,8 +55,8 @@
 
 
 
-        <menuitem id="mt_config_menu" name="Configuration" parent="mail.menu_root_discuss" sequence="999" groups="base.group_no_one"/>
-        <menuitem id="menu_document_type_config" name="Document Type" action="action_document_type_config_open" parent="mt_config.mt_config_menu" sequence="10" groups="base.group_no_one"/>
+        <menuitem id="mt_config_menu" name="Configuration" parent="mail.menu_root_discuss" sequence="999" groups="mt_config.mt_group_config"/>
+        <menuitem id="menu_document_type_config" name="Document Type" action="action_document_type_config_open" parent="mt_config.mt_config_menu" sequence="10" groups="mt_config.mt_group_config"/>
 
     </data>
 </odoo>

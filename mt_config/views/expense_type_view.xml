@@ -54,7 +54,7 @@
              <!-- <field name="context">{"search_default_filter_to_sell":1, "sale_multi_pricelist_product_template": 1}</field> -->
          </record>
 
-        <menuitem id="menu_expense_type_config" name="Expense Type" action="action_expense_type_config_open" parent="mt_config.mt_config_menu" sequence="20" groups="base.group_no_one"/>
+        <menuitem id="menu_expense_type_config" name="Expense Type" action="action_expense_type_config_open" parent="mt_config.mt_config_menu" sequence="20" groups="mt_config.mt_group_config"/>
 
     </data>
 </odoo>
