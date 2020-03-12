@@ -8,6 +8,9 @@
     'depends': ['base', 'mt_config', 'account', 'mt_customer', 'mt_trip', 'mt_ticket'],
     'data': [
         'views/reporting_view.xml',
+        'views/company_view.xml',
+        'report/mt_invoice.xml',
+        'report/report.xml',
         
         
     ],

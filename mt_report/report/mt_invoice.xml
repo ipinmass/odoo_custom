@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="mt_external_layout">
+            <t t-if="not o" t-set="o" t-value="doc"/>
+            <t t-if="not company">
+                <!-- Multicompany -->
+                <t t-if="company_id">
+                    <t t-set="company" t-value="company_id"/>
+                </t>
+                <t t-elif="o and 'company_id' in o">
+                    <t t-set="company" t-value="o.company_id.sudo()"/>
+                </t>
+                <t t-else="else">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+            </t>
+            <div class="header">
+            <div class="row">
+                <div class="col-3 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 120px;" alt="Logo"/>
+                </div>
+                <div class="col-9 text-right" style="margin-top:22px;" t-field="company.report_header" name="moto"/>
+            </div>
+            
+        </div>
+
+        <div class="article o_report_layout_standard"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <t t-raw="0"/>
+        </div>
+
+        <div class="footer o_standard_footer" style="margin-top:5px">
+            <table style="width:100%; padding-bottom: 30px">
+                <colgroup>
+                    <col style="width:30%"/>
+                    <col style="width:70%"/>
+                </colgroup>
+                <tr>
+                    <td class="text-right" style="padding-right: 5px; border-right: 1px solid black; font-weight: bold;">Head Office </td>
+                    <td class="text-left" style="padding-left: 5px; font-weight: bold;">Branch Office</td>
+                </tr>
+                <tr>
+                    <td class="text-right" style="padding-right: 5px; border-right: 1px solid black" >Jalan Monumen Brimob</td>
+                    <td class="text-left" style="padding-left: 5px;">Jalan Husein Hamzah,</td>
+                </tr>
+                <tr>
+                    <td class="text-right" style="padding-right: 5px; border-right: 1px solid black">Panggang Argomulyo, Sedayu,</td>
+                    <td class="text-left" style="padding-left: 5px;">Griya Jawi Permai Block A-23 Pal Lima</td>
+                </tr>
+                <tr>
+                    <td class="text-right" style="padding-right: 5px; border-right: 1px solid black">Bantul - Yogyakarta 55752</td>
+                    <td class="text-left" style="padding-left: 5px;">Pontianak - Kalimantan Barat 78114</td>
+                </tr>
+                <tr>
+                    <td class="text-right" style="padding-right: 5px; border-right: 1px solid black">(0274) 2820257</td>
+                    <td class="text-left" style="padding-left: 5px;">(0561) 7810000</td>
+                </tr>
+                <tr>
+                    <td class="text-right" style="padding-right: 5px; border-right: 1px solid black">0855-5555-5501/02</td>
+                    <td class="text-left" style="padding-left: 5px;">0855-5555-5503</td>
+                </tr>
+                <tr>
+                    <td style="background-color: grey"></td>
+                    <td style="background-color: grey"></td>
+                </tr>
+
+            </table>
+        </div>
+        
+
+        
+        </template>
+
+        <template id="mt_invoice">
+            <!-- BEGIN COPY HERE -->
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang" t-value="o.env.user.sudo().lang"/>
+                    <t t-call="mt_report.mt_external_layout">
+                    <t t-set="o" t-value="o.with_context(lang=lang)" />
+                    <t t-if="company_id">
+                        <t t-set="company" t-value="company_id"/>
+                    </t>
+                    <t t-elif="o and 'company_id' in o">
+                        <t t-set="company" t-value="o.company_id.sudo()"/>
+                    </t>
+                    <t t-else="else">
+                        <t t-set="company" t-value="res_company"/>
+                    </t>
+                    <div class="page" style="padding-left: 40px" >
+                        <t t-if="company.watermark_img">
+                            <div class="watermark" style="position:absolute;opacity:0.08;font-size:3em;width:100%;text-align:center;z-index:1000; padding-top:300px">
+                                <img t-att-src="image_data_uri(company.watermark_img)"/>
+                                    
+                            </div>
+                        </t>
+
+                        <div style="width:100%">
+                            <table style="width:100%">
+                                <colgroup>
+                                    <col style="width:1%"/>
+                                    <col style="width:99%"/>
+                                </colgroup>
+                                <tr>
+                                    <td style="border-right: 4px solid black; border-left: 4px solid black"></td>
+                                    <td style="font-size: 40px; padding-left: 10px; font-weight: bold;">INVOICE #
+                                        <span t-field="o.sequence_number_next_prefix"></span>
+                                        <span t-field="o.sequence_number_next"></span>
+
+                                </td>
+                                </tr>
+                                <tr>
+                                    <td style="border-right: 4px solid black; border-left: 4px solid black"></td>
+                                    <td style="font-size: 28px; padding-left: 10px"><span t-field="o.date_invoice"></span></td>
+                                </tr>
+
+                            </table>
+                        </div>
+                        <div style="width:100%; padding-top: 40px">
+                            <table style="width:100%; border: 2px solid black">
+                                <colgroup>
+                                    <col style="width: 40%"/>
+                                    <col style="width: 2%"/>
+                                    <col style="width: 58%"/>
+                                    <tr>
+                                        <td colspan="3" style="padding: 5px; background-color: #909090; border: 1 px solid black; font-weight: bold">CUSTOMER DETAILS</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; font-weight: bold">Name</td>
+                                        <td style="padding: 5px">:</td>
+                                        <td style="padding: 5px"><span t-field="o.partner_id.name"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; font-weight: bold">Address</td>
+                                        <td style="padding: 5px">:</td>
+                                        <td style="padding: 5px"><span t-field="o.partner_id.street"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; border-bottom: 1px solid black; font-weight: bold">Phone</td>
+                                        <td style="padding: 5px; border-bottom: 1px solid black">:</td>
+                                        <td style="padding: 5px; border-bottom: 1px solid black"><span t-field="o.partner_id.phone"></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; font-weight: bold">Method</td>
+                                        <td style="padding: 5px">:</td>
+                                        <td style="padding: 5px">Transfer</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px; font-weight: bold">Status</td>
+                                        <td style="padding: 5px">:</td>
+                                        <td style="padding: 5px"><span t-field="o.state"></span></td>
+                                    </tr>
+                                </colgroup>
+                            </table>
+                        </div>
+
+                        <div style="width:100%; padding-top: 40px">
+                             <table style="width:100%; border: 2px solid black">
+                                <colgroup>
+                                    <col style="width: 7%"/>
+                                    <col style="width: 10%"/>
+                                    <col style="width: 46%"/>
+                                    <col style="width: 7%"/>
+                                    <col style="width: 15%"/>
+                                    <col style="width: 15%"/>
+                                </colgroup>
+                               
+                                    <tr style="background-color: #909090">
+                                        <td class="strong" style="border: 1px solid black; font-weight: bold; padding:5px">No</td>
+                                        <td class="strong" style="border: 1px solid black; font-weight: bold; padding:5px">Item</td>
+                                        <td class="strong" style="border: 1px solid black; font-weight: bold; padding:5px">Description</td>
+                                        <td class="strong" style="border: 1px solid black; font-weight: bold; padding:5px">Qty</td>
+                                        <td class="strong" style="border: 1px solid black; font-weight: bold; padding:5px">Price Unit</td>
+                                        <td class="strong" style="border: 1px solid black; font-weight: bold; padding:5px">Sub Total</td>
+                                    </tr>
+
+                                <t t-set="line_no" t-value="1"/>
+                                <t t-set="current_subtotal" t-value="0"/>
+
+                                <t t-foreach="o.invoice_line_ids" t-as="line">
+
+                                    <tr>
+                                        <td style="padding: 5px; border-right: 1px solid black"><span t-esc="line_no"></span></td>
+                                        <td style="padding: 5px; border-right: 1px solid black"><span t-field="o.name"></span></td>
+                                        <td style="padding: 5px; border-right: 1px solid black"><span t-field="line.name"></span></td>
+                                        <td class="text-center" style="padding: 5px; border-right: 1px solid black"><span t-field="line.quantity"></span></td>
+                                        <td style="padding: 5px; border-right: 1px solid black"><span t-field="line.price_unit"></span></td>
+                                        <td style="padding: 5px;"><span t-field="line.price_subtotal"></span></td>
+
+                                    </tr>
+                                </t>
+                                <tr style="background-color: #909090; border-top: 1px solid black">
+                                    <td class="text-right" colspan="5" style="padding: 5px; font-weight: bold; border-right: 1px solid black">TOTAL</td>
+                                    <td style="padding: 5px; font-weight: bold"><span t-field="o.amount_total"></span></td>
+                                </tr>
+                            </table>
+
+                        </div>
+                        <div style="padding-top: 50px; font-weight: bold; font-size: 20px; padding-left: 20px">Thank you!</div>
+                    </div>
+
+
+                    </t>
+                </t>
+            </t>
+        <!-- END OF COPY -->
+        </template>
+    </data>
+</odoo>
+    

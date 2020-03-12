@@ -169,7 +169,8 @@ class TripMember(models.Model):
             'journal_id': journal_id,
             'currency_id': self.env.user.company_id.currency_id.id,
             'company_id': company_id,
-            'user_id': self.env.user.id
+            'user_id': self.env.user.id,
+            'date_invoice': fields.Date.today(),
         })
         return invoice_vals
 
