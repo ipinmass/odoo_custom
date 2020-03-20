@@ -34,12 +34,11 @@ class Partner(models.Model):
     @api.one
     @api.constrains('passport_no')
     def _check_passport(self):
-        records = self.search([('passport_no','=', self.passport_no), ('id','!=',self.id)])
-        for rec in records:
-            raise ValidationError(_("This passport number has been used by another person, named: %s" %rec.name))    
+        if self.passport_no: # Allowing to register empty passport number
+            records = self.search([('passport_no','=', self.passport_no), ('id','!=',self.id)])
+            for rec in records:
+                raise ValidationError(_("This passport number has been used by another person, named: %s" %rec.name))    
             
-
-
 
 class DocumentHisotry(models.Model):
     _name = 'partner.document.history'
