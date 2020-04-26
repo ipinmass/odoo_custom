@@ -14,29 +14,26 @@ class Trip(models.Model):
 
     @api.model
     def _default_currency(self):
-        
         return self.env.user.company_id.currency_id
-
 
     name = fields.Char(string="Name", required=True, )
     planned_date = fields.Date(string='Planned Date',)
-    admin = fields.Many2one('res.partner', string='Admin', domain=[('customer','=', False)], readonly=True, )
-    state = fields.Selection([('open', 'Open'),('progress', 'Progress'),('done', 'Done'), ('cancel', 'Cancel')], 
-                              default='open', index=True, track_visibility='onchange', copy=False)
+    admin = fields.Many2one('res.partner', string='Admin', domain=[('customer', '=', False)], readonly=True, )
+    state = fields.Selection([('open', 'Open'), ('progress', 'Progress'), ('done', 'Done'), ('cancel', 'Cancel')],
+                             default='open', index=True, track_visibility='onchange', copy=False)
     member_ids = fields.One2many('trip.member', 'trip_id', string='Members',)
-    trip_template = fields.Many2one('trip.template', 'Trip Template', domain=[('active','=', True)],)
+    trip_template = fields.Many2one('trip.template', 'Trip Template', domain=[('active', '=', True)])
     fare = fields.Float('Fare')
-    total_expenses = fields.Monetary(string='Total Expenses',
-        store=True, readonly=True, compute='_compute_amount', track_visibility='always')
+    total_expenses = fields.Monetary(string='Total Expenses', store=True, readonly=True,
+                                     compute='_compute_amount', track_visibility='always')
     forcasted_income = fields.Monetary(string='Forcasted Income', help='Computed based on all creaetd invoices including the unpaid one',
-        store=True, readonly=True, compute='_compute_amount', track_visibility='always')
+                                       store=True, readonly=True, compute='_compute_amount', track_visibility='always')
     invoice_paid = fields.Monetary(string='Paid Invoices', help='Amount of all paid invoices',
-        store=True, readonly=True, compute='_compute_amount', track_visibility='always')
+                                   store=True, readonly=True, compute='_compute_amount', track_visibility='always')
     profit_loss = fields.Monetary(string='Profit/Loss', help='Computed only based on paid invoices (expenses are always considered confirmed)',
-        store=True, readonly=True, compute='_compute_amount', track_visibility='always')
-    currency_id = fields.Many2one('res.currency', string='Currency',
-        required=True, readonly=True,
-        default=_default_currency, track_visibility='always')
+                                  store=True, readonly=True, compute='_compute_amount', track_visibility='always')
+    currency_id = fields.Many2one('res.currency', string='Currency', required=True, readonly=True,
+                                  default=_default_currency, track_visibility='always')
     expense_ids = fields.One2many('trip.expense', 'trip_id', string='Expenses')
     personal_expenses = fields.One2many('trip.expense', 'trip_id_personal', string='Expenses')
 
@@ -49,10 +46,10 @@ class Trip(models.Model):
             if passport and passport not in passports:
                 passports.update({passport: member.partner_id.name})
             elif passport and passport in passports:
-                raise ValidationError(_("The member is already registered with passport: %s. Existed: %s. Attempting to add: %s"\
-                    %(passport,passports.get(passport), member.partner_id.name)))
+                raise ValidationError(_("The member is already registered with passport: %s. Existed: %s. Attempting to add: %s"
+                                      % (passport, passports.get(passport), member.partner_id.name)))
             else:
-                raise ValidationError(_("This member has no passport data. Name: %s" %member.partner_id.name))
+                raise ValidationError(_("This member has no passport data. Name: %s" % member.partner_id.name))
 
     @api.one
     @api.depends('member_ids.invoice_ids.state', 'member_ids.invoice_ids.amount_total', 'expense_ids.amount')
@@ -71,8 +68,6 @@ class Trip(models.Model):
         self.forcasted_income = forcasted_income
         self.invoice_paid = invoice_paid
         self.profit_loss = invoice_paid - total_expenses
-        
-
 
     @api.multi
     def action_close_registration(self):
@@ -87,12 +82,13 @@ class Trip(models.Model):
     @api.multi
     def _get_report_base_filename(self):
         self.ensure_one()
-        return  'Trip Member Summary'
+        return 'Trip Member Summary'
+
     @api.multi
     def _get_report_base_filename_2(self):
         self.ensure_one()
-        return  'Payment Summary'
-   
+        return 'Payment Summary'
+
 
 class TripMember(models.Model):
     _name = 'trip.member'
@@ -111,7 +107,7 @@ class TripMember(models.Model):
     discount = fields.Float('Discount (%)')
     installment_times = fields.Integer('Installment Times', required=True, default=1)
     payment_term_id = fields.Many2one('account.payment.term', string='Payment Terms', oldname='payment_term',
-         help="Date Due is calculated based on selected Payment Term.\
+                                      help="Date Due is calculated based on selected Payment Term.\
                               Keeping this value empty means a direct payment. Assign multiple\
                               lines of payment terms on the Payment Terms configuration to \
                               issue multiple invoices")
@@ -124,16 +120,13 @@ class TripMember(models.Model):
     dp_proof = fields.Binary('DP proof')
     sequence = fields.Integer('No.')
     show_pay_reseller = fields.Boolean('Show Pay Reseller', default=False, compute='_check_show_reseller')
-        
 
     @api.one
     @api.depends('is_reseller_paid', 'invoice_ids', 'invoice_ids.state')
     def _check_show_reseller(self):
-        inv_paid = self.invoice_ids and all([inv.state=='paid' for inv in self.invoice_ids])
+        inv_paid = self.invoice_ids and all([inv.state == 'paid' for inv in self.invoice_ids])
         if inv_paid and not self.is_reseller_paid:
             self.show_pay_reseller = True
-
-
 
     @api.one
     @api.constrains('discount')
@@ -141,13 +134,10 @@ class TripMember(models.Model):
         if self.discount > 100:
             raise ValidationError(_("Discount cannot exceed 100%!."))
 
-    
-
     @api.multi
     def _prepare_invoice(self, origin=''):
-    
         """
-        Prepare the dict of values to create the new invoice for a trip member. 
+        Prepare the dict of values to create the new invoice for a trip member.
         """
 
         self.ensure_one()
@@ -186,7 +176,6 @@ class TripMember(models.Model):
             'price_unit': amt_inv,
             'quantity': qty,
             'discount': self.discount,
-           
         }
         return res
 
@@ -195,15 +184,15 @@ class TripMember(models.Model):
         qty = 1
         discount = self.discount or 0.0
         inv_obj = self.env['account.invoice']
-        
+
         _dp = 1
-        
+
         # handle the down payment part
         dp_amt = self.dp_amount
         if dp_amt > 0.0:
             if not self.dp_proof:
                 raise ValidationError(_("Down Payment proof is required"))
-            origin = 'DP - %s - %s ' %(self.partner_id.name, self.trip_id.name)
+            origin = 'DP - %s - %s ' % (self.partner_id.name, self.trip_id.name)
             inv_vals = self._prepare_invoice(origin=origin)
             inv_vals.update({'name': 'DP - ' + self.trip_id.name})
             inv_vals.update({'payment_prove_img': self.dp_proof})
@@ -217,10 +206,10 @@ class TripMember(models.Model):
 
         if self.payment_term_id and self.payment_type == 'credit':
             line_no = 1
-            for date, amt in self.payment_term_id.compute(self.trip_id.fare - self.dp_amount)[0]:
-                origin = 'INV - %s - %s - %s ' %(str(line_no), self.partner_id.name, self.trip_id.name)
+            for _date, amt in self.payment_term_id.compute(self.trip_id.fare - self.dp_amount)[0]:
+                origin = 'INV - %s - %s - %s ' % (str(line_no), self.partner_id.name, self.trip_id.name)
                 inv_vals = self._prepare_invoice(origin=origin)
-                inv_vals.update({'date_due': date, 'payment_term_id': self.payment_term_id.id})
+                inv_vals.update({'date_due': _date, 'payment_term_id': self.payment_term_id.id})
                 inv_created = inv_obj.create(inv_vals)
                 inv_line_vals = self._prepare_invoice_line(qty, amt, origin=origin)
                 inv_line_vals.update({'invoice_id': inv_created.id})
@@ -228,7 +217,7 @@ class TripMember(models.Model):
                 inv_created.update({'member_id': self.id})
                 line_no += 1
         else:
-            origin = 'INV - %s - %s ' %(self.partner_id.name, self.trip_id.name)
+            origin = 'INV - %s - %s ' % (self.partner_id.name, self.trip_id.name)
             inv_vals = self._prepare_invoice(origin=origin)
             inv_created = inv_obj.create(inv_vals)
             amt = self.trip_id.fare - self.dp_amount
@@ -238,7 +227,6 @@ class TripMember(models.Model):
             inv_created.update({'member_id': self.id})
 
         return True
-
 
     @api.multi
     def action_invoice_show(self):
@@ -258,7 +246,6 @@ class TripMember(models.Model):
         action_vals['views'] = [(self.env.ref('account.invoice_tree').id, 'tree'), (self.env.ref('account.invoice_form').id, 'form')]
         return action_vals
 
-
     @api.one
     def action_documents_create(self):
         context = self.env.context.copy()
@@ -268,18 +255,18 @@ class TripMember(models.Model):
         doc_history = self.env['partner.document.history']
         if templates:
             docs = {}
-            histories = doc_history.search([('partner_id','=', self.partner_id.id)])
+            histories = doc_history.search([('partner_id', '=', self.partner_id.id)])
             for history in histories:
-                if (history.doc_type.id not in docs) or (docs.get(history.doc_type.id,)\
-                                                    and docs.get(history.doc_type.id).get('create_date') < history.create_date):
+                if (history.doc_type.id not in docs) or (docs.get(history.doc_type.id,) and
+                   docs.get(history.doc_type.id).get('create_date') < history.create_date):
                     docs.update({history.doc_type.id: {'create_date': history.create_date, 'doc': history.doc}})
             for doc in templates.documents:
                 v = {
                     'name': doc.name,
                     'member_id': self.id,
-                    'attachment': docs.get(doc.doc_type.id,{}).get('doc', None),
+                    'attachment': docs.get(doc.doc_type.id, {}).get('doc', None),
                     'is_image': doc.doc_type.is_image,
-                    'doc_type':doc.doc_type.id
+                    'doc_type': doc.doc_type.id
                 }
                 trip_doc_obj.with_context(context).create(v)
         return True
@@ -291,7 +278,7 @@ class TripMember(models.Model):
         reseller_exp_type = self.env.ref('mt_config.id_expense_type_reseller').id
         expense_obj = self.env['trip.expense']
         expense_vals = {
-            'name': 'Reseller Payment - %s - %s ' %(self.reseller.name, self.trip_id.name),
+            'name': 'Reseller Payment - %s - %s ' % (self.reseller.name, self.trip_id.name),
             'amount': self.reseller_fee,
             'expense_type': reseller_exp_type,
             'trip_id': self.trip_id.id
@@ -301,16 +288,13 @@ class TripMember(models.Model):
         self.is_reseller_paid = True
         return True
 
-
     @api.one
     def action_documents_show(self):
         return
 
-    
 
 class TripTemplate(models.Model):
     _name = 'trip.template'
-
 
     name = fields.Char('Destination')
     documents = fields.One2many('trip.document.template', 'template_id', string='Documents')
@@ -323,7 +307,7 @@ class TripDocumentTemplate(models.Model):
     template_id = fields.Many2one('trip.template', string='Trip Template')
     doc_type = fields.Many2one('document.type.config', required=True)
     name = fields.Char('Document Name', required=True)
-    
+
 
 class TripDocument(models.Model):
     _name = 'trip.document'
@@ -341,9 +325,9 @@ class TripDocument(models.Model):
             partner = self.member_id.partner_id
             history_obj.create({
                 'partner_id': partner.id,
-                'doc_type': values.get('doc_type') or self.doc_type.id ,
+                'doc_type': values.get('doc_type') or self.doc_type.id,
                 'doc': values.get('attachment'),
-                'name': '%s uploaded from trip member update' %(values.get('name', False) or self.name),
+                'name': '%s uploaded from trip member update' % (values.get('name', False) or self.name),
                 })
 
         return super(TripDocument, self).write(values)
@@ -355,10 +339,9 @@ class TripDocument(models.Model):
             partner = self.env['trip.member'].browse(vals.get('member_id')).partner_id
             history_obj.create({
                 'partner_id': partner.id,
-                'doc_type': vals.get('doc_type') or self.doc_type.id ,
+                'doc_type': vals.get('doc_type') or self.doc_type.id,
                 'doc': vals.get('attachment'),
-                'name': '%s uploaded from trip member creation' %(vals.get('name', False) or self.name),
+                'name': '%s uploaded from trip member creation' % (vals.get('name', False) or self.name),
                 })
 
         return super(TripDocument, self).create(vals)
-

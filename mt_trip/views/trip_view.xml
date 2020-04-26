@@ -119,7 +119,7 @@
                 <form string="Trip Member">
                     <group>
                         <group>
-                            <field name="sequence"/>
+                            <field name="sequence" invisible="1"/>
                             <field name="partner_id"/>
                             <field name="dp_amount"/>
                             <field name="dp_proof"/>

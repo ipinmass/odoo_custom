@@ -16,8 +16,8 @@ class TripExpenses(models.Model):
 
     name = fields.Char('Name')
     currency_id = fields.Many2one('res.currency', string='Currency',
-        required=True, readonly=True, states={'draft': [('readonly', False)]},
-        default=_default_currency, track_visibility='always')
+                                  required=True, readonly=True, states={'draft': [('readonly', False)]},
+                                  default=_default_currency, track_visibility='always')
     amount = fields.Monetary(string='Amount', help='Expense Amount', store=True, track_visibility='always')
     expense_type = fields.Many2one('expense.type.config', string='Expense Type', required=True)
     invoice_id = fields.Many2one('account.invoice', string='Supplier Invoice')
@@ -25,30 +25,29 @@ class TripExpenses(models.Model):
     trip_id = fields.Many2one('mt.trip', string='Related Trip')
     code = fields.Char('Code', help='Can be either Hotel Code or Flight Code, depending on the Expense Type')
     personal = fields.Boolean(string='Is Personal Expense?', related='expense_type.personal')
-    partner_id = fields.Many2one('res.partner', string='Customer', domain=[('customer','=', True)])
+    partner_id = fields.Many2one('res.partner', string='Customer', domain=[('customer', '=', True)])
     passport_no = fields.Char('Passport No', related='partner_id.passport_no')
     passport_img = fields.Binary('Scanned Passport', related='partner_id.passport_img')
     passport_exp = fields.Date('Passport Validity', related='partner_id.passport_exp')
     passport_issued = fields.Date('Passport Issued', related='partner_id.passport_issued')
     dtof_birth = fields.Date('Date of Birth', related='partner_id.dtof_birth')
-    trip_id_personal = fields.Many2one('res.partner', string='Customer', domain=[('customer','=', True)])
+    trip_id_personal = fields.Many2one('res.partner', string='Customer', domain=[('customer', '=', True)])
     insurance_invoiced = fields.Boolean('Insurance Invoiced ?', default=False, readonly=True)
-    
 
     @api.onchange('expense_type')
     def _onchange_expense_type(self):
         context = self._context or {}
-        if context.get('trip_id'):
-            query = '''
-                SELECT partner_id FROM trip_member WHERE trip_id=%s
-            ''' %context.get('trip_id')
-            self.env.cr.execute(query)
-            res = self.env.cr.dictfetchall()
+        # if context.get('trip_id'):
+        #     query = '''
+        #         SELECT partner_id FROM trip_member WHERE trip_id=%s
+        #     ''' % context.get('trip_id')
+        #     self.env.cr.execute(query)
+        #     res = self.env.cr.dictfetchall()
 
         if context.get('personal', None) is not None:
             domain = {'expense_type': [('personal', '=', context.get('personal'))]}
             return {'domain': domain}
-    
+
     def _get_name(self):
         self.ensure_one()
         if self.trip_id:
@@ -102,11 +101,9 @@ class TripExpenses(models.Model):
             return True
         self.issue_invoice(model)
 
-        
-    
     @api.one
     def button_confirm(self):
-        ctx = self._context
+        # ctx = self._context
         inv_obj = self.env['account.invoice']
         partner_id = self.env.ref('mt_trip.supplier_generic_ma_travel')
         journal_id = self.env.ref('mt_trip.mt_journal_payment_id').id
@@ -114,14 +111,14 @@ class TripExpenses(models.Model):
         if self.expense_type.name and self.expense_type.name.lower() == 'tax':
             partner_id = self.env.ref('mt_trip.supplier_tax_generic_ma_travel')
             journal_id = self.env.ref('mt_trip.mt_journal_tax_payment_id').id
-        if not all ([partner_id, journal_id]):
+        if not all([partner_id, journal_id]):
             return True
 
         vinvoice = self.env['account.invoice'].new({'partner_id': partner_id.id})
         # Get partner extra fields
         vinvoice._onchange_partner_id()
         invoice_vals = vinvoice._convert_to_write(vinvoice._cache)
-        
+
         name = self._get_name()
         _logger.info('fafhaskfdddd---------- name %s', name)
         name = isinstance(name, list) and name[0] or name
@@ -144,16 +141,11 @@ class TripExpenses(models.Model):
             'price_unit': self.amount,
             'quantity': 1,
             'discount': 0.0,
-           
         }
         inv_created = inv_obj.create(invoice_vals)
-        
+
         invoice_line_vals.update({'invoice_id': inv_created.id})
         self.env['account.invoice.line'].create(invoice_line_vals)
-        self.invoice_id =  inv_created
+        self.invoice_id = inv_created
         inv_created.action_invoice_open()
         return True
-
-
-
-

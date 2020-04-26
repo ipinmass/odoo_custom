@@ -8,21 +8,39 @@
             <field name="inherit_id" ref="account.invoice_form"/>
             <!-- <field name="groups_id" eval="[(5,)]"/> -->
             <field name="arch" type="xml">
-            	<xpath expr="//page[@name='other_info']" position="after">
-            		<page string="Payment Prove">
-						<group>
-							<field name="is_image"/>
-							<field name="payment_prove" attrs="{'invisible': [('is_image','=',True)]}"/>
-						</group>
-            			<field name="payment_prove_img" widget='image' options='{"size": [500, 500]}' attrs="{'invisible': [('is_image','=',False)]}"/>
-            		</page>
-            	</xpath>
+                <xpath expr="//page[@name='other_info']" position="after">
+                    <page string="Payment Prove">
+                        <group>
+                            <field name="is_image"/>
+                            <field name="payment_prove" attrs="{'invisible': [('is_image','=',True)]}"/>
+                        </group>
+                        <field name="payment_prove_img" widget='image' options='{"size": [500, 500]}' attrs="{'invisible': [('is_image','=',False)]}"/>
+                    </page>
+                </xpath>
                 
                 <field name="cash_rounding_id" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>
                 
-			</field>
+            </field>
+        </record>
+        <record id="view_invoice_payment_item_id" model="ir.ui.view">
+            <field name="name">account.invoice.line.item.view</field>
+            <field name="model">account.invoice</field>
+            <field name="priority">101</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <!-- <field name="groups_id" eval="[(5,)]"/> -->
+            <field name="arch" type="xml">
 
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="after">
+                    <field name="invoice_item"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                    
+                </xpath>
+                
+            </field>
+        </record>
 
-</record></data></odoo>
+</data></odoo>
