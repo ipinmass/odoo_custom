@@ -1,5 +1,5 @@
 {
-    'name': 'MA Tickets',
+    'name': 'AM Tickets',
     'version': '0.0',
     'category': 'Customer',
     'sequence': 999,

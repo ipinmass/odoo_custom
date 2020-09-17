@@ -57,3 +57,16 @@ done:
    4. Price Unit Measurement under the Database/Decimal Presicion
    5. Date format under Languange Setting %B %d, %Y
    6. 
+
+   1. Informasi invoice di customer berdasarkan active payment
+   2. Filter Birthdate
+   3. Payment proof validate
+   4. personal expense (visa, insurance + invoice attached to customer)
+   5. expense proof validate
+   6. profit summary
+   7. payment full and credit (partial payment)
+   
+
+   andicole_add@yahoo.com
+   support@amtourtravel.com
+   miftha_nursaleh@yahoo.com
