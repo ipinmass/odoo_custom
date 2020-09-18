@@ -14,9 +14,12 @@
                 <field name="type" position="before">
                         <field name="gender"/>
                         <field name="dtof_birth" attrs="{'required':[('customer', '=', True)]}"/>
-                        <field name="passport_no" attrs="{'required':[('customer', '=', True)]}"/>
-                        <field name="passport_exp" attrs="{'required':[('customer', '=', True)]}"/>
-                        <field name="passport_issued" attrs="{'required':[('customer', '=', True)]}"/>
+                        <field name="passport_no"/> 
+                        <!-- attrs="{'required':[('customer', '=', True)]}"/> -->
+                        <field name="passport_exp"/> 
+                        <!-- attrs="{'required':[('customer', '=', True)]}"/> -->
+                        <field name="passport_issued"/> 
+                         <!-- attrs="{'required':[('customer', '=', True)]}"/> -->
                         <field name="reseller_id"/>
                 </field>
 

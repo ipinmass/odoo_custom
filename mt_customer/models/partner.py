@@ -25,18 +25,31 @@ class Partner(models.Model):
     @api.one
     @api.depends('document_history', 'document_history.doc')
     def get_passport(self):
+        passport_type = self.env.ref('mt_config.id_document_type_passport').id
+        ktp_type = self.env.ref('mt_config.id_document_type_ktp').id
+        kk_type = self.env.ref('mt_config.id_document_type_kk').id
         found = None, None
-        for history in self.document_history:
-            decoded_value = base64.b64decode(history.doc)
-            if ('passport' in history.doc_type.name.lower()) and ('image' in guess_mimetype(decoded_value).lower()):
-                # _logger.info("1===================Found %s", history.name)
-                if history.create_date:
-                    if not found[0] or found[0] < history.create_date:
-                        found = history.create_date, history.doc
+        doms = [('partner_id', '=', self.id), ('doc_type', 'in', [passport_type])]
+        doms2 = [('partner_id', '=', self.id), ('doc_type', 'in', [ktp_type])]
+        doms3 = [('partner_id', '=', self.id), ('doc_type', 'in', [kk_type])]
+        recs = self.env['partner.document.history'].search(doms)
+
+        for r in recs:
+            if (not found[0] or found[0] < r.create_date) and 'jpeg' in guess_mimetype(base64.b64decode(r.doc)).lower():
+                found = r.create_date, r.doc
+        if not found[1]:
+            recs = self.env['partner.document.history'].search(doms2)
+            for r in recs:
+                if (not found[0] or found[0] < r.create_date) and 'jpeg' in guess_mimetype(base64.b64decode(r.doc)).lower():
+                    found = r.create_date, r.doc
+        if not found[1]:
+            recs = self.env['partner.document.history'].search(doms3)
+            for r in recs:
+                if (not found[0] or found[0] < r.create_date) and 'jpeg' in guess_mimetype(base64.b64decode(r.doc)).lower():
+                    found = r.create_date, r.doc
         if found[1]:
+            # pass
             self.passport_img = found[1]
-            # decoded_value = base64.b64decode(found[1])
-            # _logger.info("===================Found %s", guess_mimetype(decoded_value))
 
     @api.one
     @api.constrains('passport_no')
