@@ -145,7 +145,7 @@
                                     <tree string="Documents" editable="bottom">
                                         <field name="name"/>
                                         <field name="attachment"/>
-                                        <field name="doc_type"/>
+                                        <field name="doc_type" widget="selection"/>
                                         <field name="is_image"/>
                                     </tree>
                                 </field>
@@ -207,7 +207,7 @@
                         <field name="documents">
                             <tree string="Documents Required" editable="bottom">
                                 <field name="name"/>
-                                <field name="doc_type"/>
+                                <field name="doc_type" widget="selection"/>
                             </tree>
                         </field>
                     </group>

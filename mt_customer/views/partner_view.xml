@@ -30,7 +30,7 @@
                                 <tree string="Document Histories" editable="bottom">
                                     <field name="name"/>
                                     <field name="create_date"/>
-                                    <field name="doc_type"/>
+                                    <field name="doc_type" widget="selection"/>
                                     <field name="doc"/>
                                 </tree>
                             </field>
@@ -70,7 +70,7 @@
                     <group>
                         <field name="name"/>
                         <field name="create_date"/>
-                        <field name="doc_type"/>
+                        <field name="doc_type" widget="selection"/>
                         <field name="doc"/>
                     </group>
                 </form>
