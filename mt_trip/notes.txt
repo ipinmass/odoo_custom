@@ -1,4 +1,0 @@
-- Journal Default Credit and Debit account have to be filled
-	- Create Default Journal
-	- Give access to multi currency group
-	- Instead of invoices, change to payment model.
