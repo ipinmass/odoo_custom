@@ -9,7 +9,6 @@ _logger = logging.getLogger(__name__)
 class TripExpenses(models.Model):
     _name = 'trip.expense'
 
-
     @api.model
     def _default_currency(self):
         return self.env.user.company_id.currency_id

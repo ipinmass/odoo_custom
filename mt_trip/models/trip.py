@@ -4,6 +4,9 @@ from odoo.addons import decimal_precision as dp
 from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 from datetime import date
 
+import base64
+from odoo.tools.mimetypes import guess_mimetype
+
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -52,11 +55,17 @@ class Trip(models.Model):
                 raise ValidationError(_("This member has no passport data. Name: %s" % member.partner_id.name))
 
     @api.one
-    @api.depends('member_ids.invoice_ids.state', 'member_ids.invoice_ids.amount_total', 'expense_ids.amount')
+    @api.depends('member_ids.invoice_ids.state',
+                 'member_ids.invoice_ids.amount_total',
+                 'expense_ids.amount',
+                 'personal_expenses',
+                 'personal_expenses.amount',
+                 'personal_expenses.state')
     def _compute_amount(self):
         total_expenses = 0.0
-        for exp in self.expense_ids:
-            total_expenses += exp.amount
+        for exp in self.expense_ids + self.personal_expenses:
+            if exp.state == 'paid':
+                total_expenses += exp.amount
         self.total_expenses = total_expenses
         forcasted_income = 0.0
         invoice_paid = 0.0
@@ -195,7 +204,11 @@ class TripMember(models.Model):
             origin = 'DP - %s - %s ' % (self.partner_id.name, self.trip_id.name)
             inv_vals = self._prepare_invoice(origin=origin)
             inv_vals.update({'name': 'DP - ' + self.trip_id.name})
-            inv_vals.update({'payment_prove_img': self.dp_proof})
+            if 'jpeg' in guess_mimetype(base64.b64decode(self.dp_proof)).lower():
+                inv_vals.update({'payment_prove_img': self.dp_proof, 'is_image': True})
+            else:
+                inv_vals.update({'payment_prove': self.dp_proof, 'is_image': False})
+
             inv_created = inv_obj.create(inv_vals)
             inv_line_vals = self._prepare_invoice_line(qty, dp_amt, origin=origin)
             # omit discount from down payment invoice
