@@ -57,7 +57,9 @@ class Trip(models.Model):
     @api.one
     @api.depends('member_ids.invoice_ids.state',
                  'member_ids.invoice_ids.amount_total',
+                 'expense_ids',
                  'expense_ids.amount',
+                 'expense_ids.state',
                  'personal_expenses',
                  'personal_expenses.amount',
                  'personal_expenses.state')
