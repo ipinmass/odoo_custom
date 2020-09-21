@@ -63,7 +63,7 @@
                             </page>
                             <page string="General Expenses">
                                 <field name="expense_ids" context="{'personal': False}" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}">
-                                    <tree string="Expenses">
+                                    <tree string="Expenses" editable="bottom">
                                         <field name="personal" invisible="1"/>
                                         <field name="name"/>
                                         <field name="expense_type" widget="selection" domain="[('personal', '=', False)]"/>
