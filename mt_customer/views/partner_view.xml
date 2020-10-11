@@ -12,14 +12,14 @@
                     <field name="passport_img" widget='image' options='{"size": [500, 500]}' attrs="{'invisible': [('customer', '=', False)]}"/>
                 </field>
                 <field name="type" position="before">
+                        <field name="is_child"/>
+
                         <field name="gender"/>
                         <field name="dtof_birth" attrs="{'required':[('customer', '=', True)]}"/>
-                        <field name="passport_no"/> 
-                        <!-- attrs="{'required':[('customer', '=', True)]}"/> -->
-                        <field name="passport_exp"/> 
-                        <!-- attrs="{'required':[('customer', '=', True)]}"/> -->
-                        <field name="passport_issued"/> 
-                         <!-- attrs="{'required':[('customer', '=', True)]}"/> -->
+                        <field name="passport_no" attrs="{'invisible':[('is_child', '=', True)]}"/> 
+                        <field name="passport_exp" attrs="{'invisible':[('is_child', '=', True)]}"/> 
+                        <field name="passport_issued" attrs="{'invisible':[('is_child', '=', True)]}"/> 
+                        <field name="ktp_no" attrs="{'invisible':[('is_child', '=', True)]}"/>
                         <field name="reseller_id"/>
                 </field>
 

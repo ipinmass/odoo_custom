@@ -21,6 +21,8 @@ class Partner(models.Model):
     document_history = fields.One2many('partner.document.history', 'partner_id', string='Document Histories')
     passport_img = fields.Binary(compute='get_passport', string='Passport', store=True)
     reseller_id = fields.Many2one('res.partner', string='Reseller')
+    ktp_no = fields.Char(string='KTP Number')
+    is_child = fields.Boolean(string='Is Child', default=False)
 
     @api.one
     @api.depends('document_history', 'document_history.doc')
@@ -58,6 +60,14 @@ class Partner(models.Model):
             records = self.search([('passport_no', '=', self.passport_no), ('id', '!=', self.id)])
             for rec in records:
                 raise ValidationError(_("This passport number has been used by another person, named: %s" % rec.name))
+
+    @api.one
+    @api.constrains('ktp_no')
+    def _check_ktp(self):
+        if self.passport_no:  # Allowing to register empty passport number
+            records = self.search([('ktp_no', '=', self.ktp_no), ('id', '!=', self.id)])
+            for rec in records:
+                raise ValidationError(_("This ktp number has been used by another person, named: %s" % rec.name))
 
 
 class DocumentHisotry(models.Model):

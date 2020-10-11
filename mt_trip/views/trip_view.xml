@@ -45,7 +45,7 @@
                             <page string="Personal Expenses">
                                 <field name="id" invisible="1"/>
                                 <field name="personal_expenses" context="{'personal': True, 'trip_id': id}" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}">
-                                    <tree string="General Expenses" editable="bottom">
+                                    <tree string="Personal Expenses">
                                         <field name="personal" invisible="1"/>
                                         <field name="name"/>
                                         <field name="expense_type" widget="selection" domain="[('personal', '=', True)]"/>
@@ -63,7 +63,7 @@
                             </page>
                             <page string="General Expenses">
                                 <field name="expense_ids" context="{'personal': False}" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}">
-                                    <tree string="Expenses" editable="bottom">
+                                    <tree string="Expenses">
                                         <field name="personal" invisible="1"/>
                                         <field name="name"/>
                                         <field name="expense_type" widget="selection" domain="[('personal', '=', False)]"/>
@@ -185,6 +185,7 @@
             <field name="arch" type="xml">
                 <tree string="Trip Template">
                     <field name="name"/>
+                    <field name="trip_type"/>
                     <field name="active" widget="boolean_toggle"/>
                 </tree>
             </field>
@@ -195,13 +196,17 @@
             <field name="model">trip.template</field>
             <field name="arch" type="xml">
                 <form string="Trip Template">
+                    <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
                             <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
                         </button>
                     </div>
                     <group>
+                        <group>
                             <field name="name"/>
+                            <field name="trip_type"/>
+                        </group>
                     </group>
                     <group>
                         <field name="documents">
@@ -211,6 +216,7 @@
                             </tree>
                         </field>
                     </group>
+                </sheet>
                 </form>
             </field>
         </record>

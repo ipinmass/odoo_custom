@@ -20,7 +20,7 @@ class TripExpenses(models.Model):
     amount = fields.Monetary(string='Amount', help='Expense Amount', store=True, track_visibility='always')
     expense_type = fields.Many2one('expense.type.config', string='Expense Type', required=True)
     invoice_id = fields.Many2one('account.invoice', string='Supplier Invoice')
-    state = fields.Selection(string='State', related='invoice_id.state', readonly=True)
+    state = fields.Selection(string='State', related='invoice_id.state', readonly=True, derault=None)
     trip_id = fields.Many2one('mt.trip', string='Related Trip')
     code = fields.Char('Code', help='Can be either Hotel Code or Flight Code, depending on the Expense Type')
     personal = fields.Boolean(string='Is Personal Expense?', related='expense_type.personal')
@@ -38,7 +38,7 @@ class TripExpenses(models.Model):
         context = self._context or {}
         # if context.get('trip_id'):
         #     query = '''
-        #         SELECT partner_id FROM trip_member WHERE trip_id=%s
+        #         SELECT partner_id FROM trip_member WHERE trip_id=%sf
         #     ''' % context.get('trip_id')
         #     self.env.cr.execute(query)
         #     res = self.env.cr.dictfetchall()

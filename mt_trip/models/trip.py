@@ -25,7 +25,7 @@ class Trip(models.Model):
     state = fields.Selection([('open', 'Open'), ('progress', 'Progress'), ('done', 'Done'), ('cancel', 'Cancel')],
                              default='open', index=True, track_visibility='onchange', copy=False)
     member_ids = fields.One2many('trip.member', 'trip_id', string='Members',)
-    trip_template = fields.Many2one('trip.template', 'Trip Template', domain=[('active', '=', True)])
+    trip_template = fields.Many2one('trip.template', 'Trip Template', domain=[('active', '=', True)], required=True)
     fare = fields.Float('Fare')
     total_expenses = fields.Monetary(string='Total Expenses', store=True, readonly=True,
                                      compute='_compute_amount', track_visibility='always')
@@ -40,19 +40,27 @@ class Trip(models.Model):
     expense_ids = fields.One2many('trip.expense', 'trip_id', string='Expenses')
     personal_expenses = fields.One2many('trip.expense', 'trip_id_personal', string='Expenses')
 
+    
     @api.one
     @api.constrains('member_ids')
     def _check_member(self):
-        passports = {}
         for member in self.member_ids:
-            passport = member.partner_id.passport_no or ''
-            if passport and passport not in passports:
-                passports.update({passport: member.partner_id.name})
-            elif passport and passport in passports:
-                raise ValidationError(_("The member is already registered with passport: %s. Existed: %s. Attempting to add: %s"
-                                      % (passport, passports.get(passport), member.partner_id.name)))
+            if not member.partner_id.is_child:
+                if self.trip_template.trip_type == 'international' and not member.partner_id.passport_no:
+                    raise ValidationError(_("For an international trip, passport number is required for an adult member. Member name: %s"
+                                      % (member.partner_id.name)))
+                elif self.trip_template.trip_type == 'domestic' and not (member.partner_id.passport_no or member.partner_id.ktp_no):
+
+                    raise ValidationError(_("For a domestic trip, passport number or ktp number is required for an adult member. This member doesn't have any, member name: %s"
+                                      % (member.partner_id.name)))
             else:
-                raise ValidationError(_("This member has no passport data. Name: %s" % member.partner_id.name))
+                kk_type = self.env.ref('mt_config.id_document_type_kk').id
+                if not any([h.id for h in member.partner_id.document_history if h.doc_type == kk_type]):
+                    raise ValidationError(_("For children who has no passport or ktp, they should have a KK document uploaded. Member name: %s"
+                                      % (member.partner_id.name)))                 
+
+
+    
 
     @api.one
     @api.depends('member_ids.invoice_ids.state',
@@ -314,6 +322,7 @@ class TripTemplate(models.Model):
     name = fields.Char('Destination')
     documents = fields.One2many('trip.document.template', 'template_id', string='Documents')
     active = fields.Boolean('Active', default=True)
+    trip_type = fields.Selection([('international', 'International'),('domestic', 'Domestic')], string='Trip Type')
 
 
 class TripDocumentTemplate(models.Model):
