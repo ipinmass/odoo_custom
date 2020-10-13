@@ -358,7 +358,7 @@ class TripDocument(models.Model):
 
     @api.model
     def create(self, vals):
-        if not self._context.get('create_from_buttton', False) and vals.get('member_id'):
+        if not self._context.get('create_from_buttton', False) and vals.get('member_id') and vals.get('attachment', False):
             history_obj = self.env['partner.document.history']
             partner = self.env['trip.member'].browse(vals.get('member_id')).partner_id
             history_obj.create({

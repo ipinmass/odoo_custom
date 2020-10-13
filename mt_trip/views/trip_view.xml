@@ -45,10 +45,10 @@
                             <page string="Personal Expenses">
                                 <field name="id" invisible="1"/>
                                 <field name="personal_expenses" context="{'personal': True, 'trip_id': id}" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}">
-                                    <tree string="Personal Expenses">
+                                    <tree string="Personal Expenses" editable="bottom">
                                         <field name="personal" invisible="1"/>
                                         <field name="name"/>
-                                        <field name="expense_type" widget="selection" domain="[('personal', '=', True)]"/>
+                                        <field name="expense_type" domain="[('personal', '=', True)]"/>
                                         <field name="partner_id"/>
                                         <field name="dtof_birth"/>
                                         <field name="passport_no"/>
@@ -63,10 +63,10 @@
                             </page>
                             <page string="General Expenses">
                                 <field name="expense_ids" context="{'personal': False}" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}">
-                                    <tree string="Expenses">
+                                    <tree string="Expenses" editable="bottom">
                                         <field name="personal" invisible="1"/>
                                         <field name="name"/>
-                                        <field name="expense_type" widget="selection" domain="[('personal', '=', False)]"/>
+                                        <field name="expense_type" domain="[('personal', '=', False)]"/>
                                         <field name="amount"/>
                                         <field name="state"/>
                                     </tree>
@@ -141,12 +141,12 @@
                     <group>
                         <notebook>
                             <page string="Documents">
-                                <field name="document_ids">
+                                <field name="document_ids" nolable="1">
                                     <tree string="Documents" editable="bottom">
                                         <field name="name"/>
-                                        <field name="attachment"/>
-                                        <field name="doc_type" widget="selection"/>
-                                        <field name="is_image"/>
+                                        <field name="attachment" widget="many2one_clickable"/>
+                                        <field name="doc_type"/>
+                                        <!-- <field name="is_image"/> -->
                                     </tree>
                                 </field>
                             </page>
@@ -162,6 +162,22 @@
                         </notebook>
                     </group>
 
+                </form>
+            </field>
+        </record>
+
+        <record id="mt_trip_member_document_form_view" model="ir.ui.view">
+            <field name="name">trip.member.document.form.view</field>
+            <field name="model">trip.document</field>
+            <field name="arch" type="xml">
+                <form string="Trip Documents">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="doc_type"/>
+                            <field name="attachment"/>
+                        </group>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -212,7 +228,7 @@
                         <field name="documents">
                             <tree string="Documents Required" editable="bottom">
                                 <field name="name"/>
-                                <field name="doc_type" widget="selection"/>
+                                <field name="doc_type"/>
                             </tree>
                         </field>
                     </group>
