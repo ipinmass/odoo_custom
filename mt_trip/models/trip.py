@@ -40,27 +40,28 @@ class Trip(models.Model):
     expense_ids = fields.One2many('trip.expense', 'trip_id', string='Expenses')
     personal_expenses = fields.One2many('trip.expense', 'trip_id_personal', string='Expenses')
 
-    
     @api.one
     @api.constrains('member_ids')
     def _check_member(self):
+        member_list = []
         for member in self.member_ids:
+            if member.partner_id.id in member_list:
+                raise ValidationError(_("Member has already registered!. Member name: %s"
+                                      % (member.partner_id.name)))
+            member_list.append(member.partner_id.id)
             if not member.partner_id.is_child:
                 if self.trip_template.trip_type == 'international' and not member.partner_id.passport_no:
                     raise ValidationError(_("For an international trip, passport number is required for an adult member. Member name: %s"
-                                      % (member.partner_id.name)))
+                                          % (member.partner_id.name)))
                 elif self.trip_template.trip_type == 'domestic' and not (member.partner_id.passport_no or member.partner_id.ktp_no):
 
                     raise ValidationError(_("For a domestic trip, passport number or ktp number is required for an adult member. This member doesn't have any, member name: %s"
-                                      % (member.partner_id.name)))
+                                          % (member.partner_id.name)))
             else:
                 kk_type = self.env.ref('mt_config.id_document_type_kk').id
                 if not any([h.id for h in member.partner_id.document_history if h.doc_type == kk_type]):
                     raise ValidationError(_("For children who has no passport or ktp, they should have a KK document uploaded. Member name: %s"
-                                      % (member.partner_id.name)))                 
-
-
-    
+                                            % (member.partner_id.name)))
 
     @api.one
     @api.depends('member_ids.invoice_ids.state',
@@ -94,6 +95,19 @@ class Trip(models.Model):
         return True
 
     @api.multi
+    def make_cancel(self):
+        ''''
+        cancel all expenses and invoices
+        self.state ='cancel'
+        '''
+        return True
+
+    @api.multi
+    def re_open(self):
+        self.state = 'open'
+        return True
+
+    @api.multi
     def make_done(self):
         self.state = 'done'
         return True
@@ -119,8 +133,8 @@ class TripMember(models.Model):
     dp_amount = fields.Float(string='DP Amount', digits=dp.get_precision('Product Price'))
     invoice_ids = fields.One2many('account.invoice', 'member_id', string='Invoice Lines')
     trip_id = fields.Many2one('mt.trip', string='Trip ID')
-    is_document_completed = fields.Boolean('Documents Completed', readonly=True)
-    is_invoice_paid = fields.Boolean('Invoices Paid', readonly=True)
+    is_document_completed = fields.Boolean('Documents Completed', compute='_check_documents_completed', readonly=True)
+    is_invoice_paid = fields.Boolean('Invoices Paid', compute='_check_invoice_paid', readonly=True)
     reseller = fields.Many2one('res.partner', related='partner_id.reseller_id', string="Reseller", domain=[('customer', '=', False)])
     reseller_fee = fields.Float(string='Reseller Fee', digits=dp.get_precision('Product Price'))
     discount = fields.Float('Discount (%)')
@@ -146,6 +160,22 @@ class TripMember(models.Model):
         inv_paid = self.invoice_ids and all([inv.state == 'paid' for inv in self.invoice_ids])
         if inv_paid and not self.is_reseller_paid:
             self.show_pay_reseller = True
+
+    @api.one
+    @api.depends('document_ids',)
+    def _check_documents_completed(self):
+        if all([True if d.attachment else False for d in self.document_ids]):
+            self.is_document_completed = True
+        else:
+            self.is_document_completed = False
+
+    @api.one
+    @api.depends('invoice_ids', 'invoice_ids.state')
+    def _check_invoice_paid(self):
+        if all([True if i.state == 'paid' else False for i in self.invoice_ids]):
+            self.is_invoice_paid = True
+        else:
+            self.is_invoice_paid = False
 
     @api.one
     @api.constrains('discount')
@@ -283,15 +313,17 @@ class TripMember(models.Model):
                 if (history.doc_type.id not in docs) or (docs.get(history.doc_type.id,) and
                    docs.get(history.doc_type.id).get('create_date') < history.create_date):
                     docs.update({history.doc_type.id: {'create_date': history.create_date, 'doc': history.doc}})
+            existed_doc_type = [d.doc_type.id for d in self.document_ids]
             for doc in templates.documents:
-                v = {
-                    'name': doc.name,
-                    'member_id': self.id,
-                    'attachment': docs.get(doc.doc_type.id, {}).get('doc', None),
-                    'is_image': doc.doc_type.is_image,
-                    'doc_type': doc.doc_type.id
-                }
-                trip_doc_obj.with_context(context).create(v)
+                if doc.doc_type.id not in existed_doc_type:
+                    v = {
+                        'name': doc.name,
+                        'member_id': self.id,
+                        'attachment': docs.get(doc.doc_type.id, {}).get('doc', None),
+                        'is_image': doc.doc_type.is_image,
+                        'doc_type': doc.doc_type.id
+                    }
+                    trip_doc_obj.with_context(context).create(v)
         return True
 
     @api.one
@@ -304,7 +336,8 @@ class TripMember(models.Model):
             'name': 'Reseller Payment - %s - %s ' % (self.reseller.name, self.trip_id.name),
             'amount': self.reseller_fee,
             'expense_type': reseller_exp_type,
-            'trip_id': self.trip_id.id
+            'trip_id': self.trip_id.id,
+            'partner_id': self.partner_id.id
         }
         created_expense = expense_obj.create(expense_vals)
         created_expense.button_confirm()
@@ -322,7 +355,7 @@ class TripTemplate(models.Model):
     name = fields.Char('Destination')
     documents = fields.One2many('trip.document.template', 'template_id', string='Documents')
     active = fields.Boolean('Active', default=True)
-    trip_type = fields.Selection([('international', 'International'),('domestic', 'Domestic')], string='Trip Type')
+    trip_type = fields.Selection([('international', 'International'), ('domestic', 'Domestic')], string='Trip Type')
 
 
 class TripDocumentTemplate(models.Model):
@@ -344,7 +377,7 @@ class TripDocument(models.Model):
 
     @api.multi
     def write(self, values):
-        if 'attachment' in values:
+        if values.get('attachment', False):
             history_obj = self.env['partner.document.history']
             partner = self.member_id.partner_id
             history_obj.create({

@@ -11,23 +11,25 @@
                     <header>
                         <button name="action_close_registration" type="object" state="open" string="Close Registration" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'open')]}"/>
                         <button name="make_done" type="object" string="Make Done" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'progress')]}"/>
+                        <button name="re_open" type="object" string="Re-Open" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'progress')]}"/>
+                        <button name="make_cancel" type="object" string="Cancel" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['done','cancel'])]}"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
                         <group>
                             <group>
-                                <field name="name" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
-                                <field name="trip_template" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
-                                <field name="fare" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
+                                <field name="name" attrs="{'readonly': [('state', 'in', ['done','cancel','progress'])]}"/>
+                                <field name="trip_template" attrs="{'readonly': [('state', 'in', ['done','cancel','progress'])]}"/>
+                                <field name="fare" attrs="{'readonly': [('state', 'in', ['done','cancel','progress'])]}"/>
                             </group>
                             <group>
-                                <field name="planned_date" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
-                                <field name="admin" attrs="{'readonly': [('state', 'in', ['done','cancel'])]}"/>
+                                <field name="planned_date" attrs="{'readonly': [('state', 'in', ['done','cancel','progress'])]}"/>
+                                <field name="admin" attrs="{'readonly': [('state', 'in', ['done','cancel','progress'])]}"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Members" >
-                                <field name="member_ids" attrs="{'readonly': [('state', 'in', ['done','cancel', 'progress'])]}">
+                                <field name="member_ids" attrs="{'readonly': [('state', 'in', ['done','cancel','progress', 'progress'])]}">
                                     <tree>
                                         <field name="sequence" widget="handle"/>
                                         <field name="partner_id"/>
@@ -51,6 +53,7 @@
                                         <field name="expense_type" domain="[('personal', '=', True)]"/>
                                         <field name="partner_id"/>
                                         <field name="dtof_birth"/>
+                                        <field name="ktp_no"/>
                                         <field name="passport_no"/>
                                         <field name="passport_exp"/>
                                         <field name="passport_issued"/>
@@ -94,6 +97,7 @@
                 <tree string="Trip">
                    <field name="name"/>
                    <field name="planned_date"/>
+                   <field name="state"/>
                </tree>
             </field>
         </record>
@@ -135,7 +139,7 @@
                             <field name="reseller_fee"/>
                             <field name="is_reseller_paid"/>
                             <field name="show_pay_reseller" invisible="1"/>
-                            <button name="action_pay_reseller" string="Create Reseller Payment" type="object" attrs="{'invisible': [('show_pay_reseller', '=', False)]}" class="oe_highlight"/>
+                            <button name="action_pay_reseller" string="Create Reseller Payment" type="object" attrs="{'invisible': [('is_reseller_paid', '=', True)]}" class="oe_highlight"/>
                         </group>
                     </group>
                     <group>
@@ -144,9 +148,8 @@
                                 <field name="document_ids" nolable="1">
                                     <tree string="Documents" editable="bottom">
                                         <field name="name"/>
-                                        <field name="attachment" widget="many2one_clickable"/>
                                         <field name="doc_type"/>
-                                        <!-- <field name="is_image"/> -->
+                                        <field name="attachment"/>                                        
                                     </tree>
                                 </field>
                             </page>

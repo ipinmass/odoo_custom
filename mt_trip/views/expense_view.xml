@@ -24,6 +24,7 @@
                             <group attrs="{'invisible': [('personal','=', False)]}">
                                 <field name="partner_id"/>
                                 <field name="dtof_birth"/>
+                                <field name="ktp_no"/>
                                 <field name="passport_no" />
                                 <field name="passport_exp"/>
                                 <field name="passport_issued"/>
