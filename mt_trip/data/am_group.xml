@@ -9,5 +9,9 @@
             <field name="name">Trip Tickets</field>
             <field name="category_id" ref="base.module_category_account_voucher"/>
         </record>
+        <record id="mt_group_trip_cancel" model="res.groups">
+            <field name="name">Trip Cancel</field>
+            <field name="category_id" ref="base.module_category_account_voucher"/>
+        </record>
     </data>
 </odoo>

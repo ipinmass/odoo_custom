@@ -9,6 +9,13 @@
             <field name="user_type_id" ref="account.data_account_type_receivable"/>
             <field name="currency_id" ref="base.IDR"/>
         </record>
+        <record id="default_customer_account_sales" model="account.account">
+            <field name="code">CS01</field>
+            <field name="name">Customer Sales</field>
+            <field eval="False" name="reconcile"/>
+            <field name="user_type_id" ref="account.data_account_type_revenue"/>
+            <field name="currency_id" ref="base.IDR"/>
+        </record>
         <record id="default_customer_account_payable" model="account.account">
             <field name="code">CP01</field>
             <field name="name">Customer Payable</field>

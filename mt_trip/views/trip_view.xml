@@ -12,7 +12,7 @@
                         <button name="action_close_registration" type="object" state="open" string="Close Registration" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'open')]}"/>
                         <button name="make_done" type="object" string="Make Done" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'progress')]}"/>
                         <button name="re_open" type="object" string="Re-Open" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'progress')]}"/>
-                        <button name="make_cancel" type="object" string="Cancel" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['done','cancel'])]}"/>
+                        <button name="make_cancel" type="object" string="Cancel" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['done','cancel'])]}" groups="mt_trip.mt_group_trip_cancel"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -128,8 +128,8 @@
                             <field name="dp_amount"/>
                             <field name="dp_proof"/>
                             <field name="discount"/>
-                            <field name="payment_type"/>
-                            <field name="payment_term_id" attrs="{'invisible': [('payment_type', '=', 'full')]}"/>
+                            <field name="payment_type" invisible="1"/>
+                            <field name="payment_term_id" attrs="{'invisible': [('payment_type', '=', 'full')]}" invisible="1"/>
                             <field name="visa_appointment_date"/>
                             <field name="hotel_code"/>
                             <field name="flight_code"/>

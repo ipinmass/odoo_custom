@@ -9,12 +9,12 @@
             <!-- <field name="groups_id" eval="[(5,)]"/> -->
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='other_info']" position="after">
-                    <page string="Payment Prove">
+                    <page string="Payment proof">
                         <group>
-                            <field name="is_image"/>
-                            <field name="payment_prove" attrs="{'invisible': [('is_image','=',True)]}"/>
+                            <!-- <field name="is_image" invisible="1"/> -->
+                            <field name="payment_proof"/>
                         </group>
-                        <field name="payment_prove_img" widget='image' options='{"size": [500, 500]}' attrs="{'invisible': [('is_image','=',False)]}"/>
+                        <field name="payment_proof_img" widget='image' options='{"size": [500, 500]}'/>
                     </page>
                 </xpath>
                 

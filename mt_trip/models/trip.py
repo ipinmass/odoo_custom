@@ -164,7 +164,7 @@ class TripMember(models.Model):
     @api.one
     @api.depends('document_ids',)
     def _check_documents_completed(self):
-        if all([True if d.attachment else False for d in self.document_ids]):
+        if self.document_ids and all([True if d.attachment else False for d in self.document_ids]):
             self.is_document_completed = True
         else:
             self.is_document_completed = False
@@ -172,7 +172,7 @@ class TripMember(models.Model):
     @api.one
     @api.depends('invoice_ids', 'invoice_ids.state')
     def _check_invoice_paid(self):
-        if all([True if i.state == 'paid' else False for i in self.invoice_ids]):
+        if self.invoice_ids and all([True if i.state == 'paid' else False for i in self.invoice_ids]):
             self.is_invoice_paid = True
         else:
             self.is_invoice_paid = False
@@ -217,11 +217,11 @@ class TripMember(models.Model):
     def _prepare_invoice_line(self, qty, amt_inv, origin=''):
         self.ensure_one()
         res = {}
-
+        account_sale = self.env.ref('mt_trip.default_customer_account_sales').id
         res = {
             'name': self.partner_id.name,
             'origin': origin,
-            'account_id': self.partner_id.property_account_receivable_id.id,
+            'account_id': account_sale,
             'price_unit': amt_inv,
             'quantity': qty,
             'discount': self.discount,
@@ -231,10 +231,7 @@ class TripMember(models.Model):
     @api.one
     def action_invoice_create(self):
         qty = 1
-        discount = self.discount or 0.0
         inv_obj = self.env['account.invoice']
-
-        _dp = 1
 
         # handle the down payment part
         dp_amt = self.dp_amount
@@ -244,10 +241,10 @@ class TripMember(models.Model):
             origin = 'DP - %s - %s ' % (self.partner_id.name, self.trip_id.name)
             inv_vals = self._prepare_invoice(origin=origin)
             inv_vals.update({'name': 'DP - ' + self.trip_id.name})
-            if 'jpeg' in guess_mimetype(base64.b64decode(self.dp_proof)).lower():
-                inv_vals.update({'payment_prove_img': self.dp_proof, 'is_image': True})
-            else:
-                inv_vals.update({'payment_prove': self.dp_proof, 'is_image': False})
+            # if 'jpeg' in guess_mimetype(base64.b64decode(self.dp_proof)).lower():
+            #     inv_vals.update({'payment_prove_img': self.dp_proof, 'is_image': True})
+            # else:
+            inv_vals.update({'payment_proof': self.dp_proof})
 
             inv_created = inv_obj.create(inv_vals)
             inv_line_vals = self._prepare_invoice_line(qty, dp_amt, origin=origin)
@@ -328,8 +325,10 @@ class TripMember(models.Model):
 
     @api.one
     def action_pay_reseller(self):
-        if not self.reseller or self.reseller_fee <= 0.0:
-            return True
+        if not self.reseller:
+            raise ValidationError(_('This Member does not have a Reseller'))
+        if not self.reseller_fee <= 0.0:
+            raise ValidationError(_('The amount of reseller fee has to be positive'))
         reseller_exp_type = self.env.ref('mt_config.id_expense_type_reseller').id
         expense_obj = self.env['trip.expense']
         expense_vals = {
