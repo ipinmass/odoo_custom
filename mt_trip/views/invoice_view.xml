@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="view_invoice_payment_prove_id" model="ir.ui.view">
+        <record id="view_invoice_payment_proof_id" model="ir.ui.view">
             <field name="name">account.invoice.payment.prove.view</field>
             <field name="model">account.invoice</field>
             <field name="priority">100</field>
@@ -12,9 +12,14 @@
                     <page string="Payment proof">
                         <group>
                             <!-- <field name="is_image" invisible="1"/> -->
-                            <field name="payment_proof"/>
+                            <field name="payment_proof_ids">
+                                <tree string="Payment Proofs">
+                                    <field name="name"/>
+                                    <field name="create_date"/>
+                                </tree>
+                            </field>
                         </group>
-                        <field name="payment_proof_img" widget='image' options='{"size": [500, 500]}'/>
+                        <!-- <field name="payment_proof_img" widget='image' options='{"size": [500, 500]}'/> -->
                     </page>
                 </xpath>
                 
@@ -41,6 +46,36 @@
                 </xpath>
                 
             </field>
+        </record>
+
+        <record id="view_form_payment_proof_id" model="ir.ui.view">
+            <field name="name">invoice.payment.proof</field>
+            <field name="model">payment.proof</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Payment Proof">
+                    <group>
+                        <field name="name"/>
+                        <field name="create_date"/>
+                        <field name="payment_proof"/>
+                        <field name="payment_proof_img" widget='image' options='{"size": [500, 500]}'/> 
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_register_payment_invoice_proof" model="ir.ui.view">
+            <field name="name">account.payment.invoice.proof</field>
+            <field name="model">account.payment</field>
+            <field name="priority">102</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+            <field name="arch" type="xml">
+                <field name="journal_id" position="after">
+                    <field name="payment_proof"/>
+                </field>
+                
+            </field>
+
         </record>
 
 </data></odoo>

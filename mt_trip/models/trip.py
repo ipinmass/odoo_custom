@@ -232,6 +232,7 @@ class TripMember(models.Model):
     def action_invoice_create(self):
         qty = 1
         inv_obj = self.env['account.invoice']
+        payment_proof_obj = self.env['payment.proof']
 
         # handle the down payment part
         dp_amt = self.dp_amount
@@ -244,6 +245,7 @@ class TripMember(models.Model):
             # if 'jpeg' in guess_mimetype(base64.b64decode(self.dp_proof)).lower():
             #     inv_vals.update({'payment_prove_img': self.dp_proof, 'is_image': True})
             # else:
+
             inv_vals.update({'payment_proof': self.dp_proof})
 
             inv_created = inv_obj.create(inv_vals)
@@ -253,6 +255,13 @@ class TripMember(models.Model):
             inv_line_vals.update({'invoice_id': inv_created.id})
             self.env['account.invoice.line'].create(inv_line_vals)
             inv_created.update({'member_id': self.id})
+
+            proof_vals = {
+                'name': 'DP Proof',
+                'payment_proof': self.dp_proof,
+                'invoice_id': inv_created.id
+            }
+            payment_proof_obj.create(proof_vals)
 
         if self.payment_term_id and self.payment_type == 'credit':
             line_no = 1
