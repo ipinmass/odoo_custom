@@ -30,6 +30,13 @@
             <field name="user_type_id" ref="account.data_account_type_receivable"/>
             <field name="currency_id" ref="base.IDR"/>
         </record>
+        <record id="default_partner_account_expense" model="account.account">
+            <field name="code">PE01</field>
+            <field name="name">Partner Expense</field>
+            <field eval="False" name="reconcile"/>
+            <field name="user_type_id" ref="account.data_account_type_expenses"/>
+            <field name="currency_id" ref="base.IDR"/>
+        </record>
         <record id="default_tax_account_payable" model="account.account">
             <field name="code">TP01</field>
             <field name="name">TAX Payable</field>
@@ -64,7 +71,7 @@
             <field name="type">bank</field>
             <field name="code">JC01</field>
             <field name="currency_id" ref="base.IDR"/>
-            <field name="default_debit_account_id" ref="mt_trip.default_customer_account_payable"/>
+            <field name="default_debit_account_id" ref="mt_trip.default_customer_account_receivable"/>
             <field name="default_credit_account_id" ref="mt_trip.default_customer_account_receivable"/>
             <field name="inbound_payment_method_ids" eval="[(6, 0, [ref('account.account_payment_method_manual_in')])]"/>
             <field name="outbound_payment_method_ids" eval="[(6, 0, [])]"/> 
@@ -82,9 +89,9 @@
         <record id="mt_journal_tax_payment_id" model="account.journal">
             <field name="name">Journal TAX Payment</field>
             <field name="type">bank</field>
-            <field name="code">JS01</field>
+            <field name="code">JT01</field>
             <field name="currency_id" ref="base.IDR"/>
-            <field name="default_debit_account_id" ref="mt_trip.default_tax_account_receivable"/>
+            <field name="default_debit_account_id" ref="mt_trip.default_tax_account_payable"/>
             <field name="default_credit_account_id" ref="mt_trip.default_tax_account_payable"/>
             <field name="bound_payment_method_ids" eval="[(6, 0, [])]"/>
             <field name="outbound_payment_method_ids" eval="[(6, 0, [ref('account.account_payment_method_manual_out')])]"/> 

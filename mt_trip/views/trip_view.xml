@@ -139,7 +139,7 @@
                             <field name="reseller_fee"/>
                             <field name="is_reseller_paid"/>
                             <field name="show_pay_reseller" invisible="1"/>
-                            <button name="action_pay_reseller" string="Create Reseller Payment" type="object" attrs="{'invisible': [('is_reseller_paid', '=', True)]}" class="oe_highlight"/>
+                            <button name="action_pay_reseller" string="Create Reseller Payment" type="object" attrs="{'invisible': ['|',('is_reseller_paid', '=', True),('reseller_fee','&lt;=',0.0)]}" class="oe_highlight"/>
                         </group>
                     </group>
                     <group>

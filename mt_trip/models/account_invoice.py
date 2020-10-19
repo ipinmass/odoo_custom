@@ -76,10 +76,10 @@ class AccountPayment(models.Model):
     def action_validate_invoice_payment(self):
         res = super(AccountPayment, self).action_validate_invoice_payment()
         for rec in self:
-            if not rec.payment_proof:
+            invoice = rec.invoice_ids and rec.invoice_ids[0]
+            if not rec.payment_proof and invoice.type == 'out_invoice':
                 raise ValidationError('You have to upload a payment proof for this payment')
 
-            invoice = rec.invoice_ids and rec.invoice_ids[0]
             # invoice.payment_proof = rec.payment_proof
             self.env['payment.proof'].create({'invoice_id': invoice.id,
                                               'payment_proof': rec.payment_proof,

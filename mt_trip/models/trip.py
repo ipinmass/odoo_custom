@@ -336,7 +336,7 @@ class TripMember(models.Model):
     def action_pay_reseller(self):
         if not self.reseller:
             raise ValidationError(_('This Member does not have a Reseller'))
-        if not self.reseller_fee <= 0.0:
+        if self.reseller_fee <= 0.0:
             raise ValidationError(_('The amount of reseller fee has to be positive'))
         reseller_exp_type = self.env.ref('mt_config.id_expense_type_reseller').id
         expense_obj = self.env['trip.expense']
@@ -344,8 +344,9 @@ class TripMember(models.Model):
             'name': 'Reseller Payment - %s - %s ' % (self.reseller.name, self.trip_id.name),
             'amount': self.reseller_fee,
             'expense_type': reseller_exp_type,
-            'trip_id': self.trip_id.id,
-            'partner_id': self.partner_id.id
+            'trip_id_personal': self.trip_id.id,
+            'partner_id': self.partner_id.id,
+            'personal': True,
         }
         created_expense = expense_obj.create(expense_vals)
         created_expense.button_confirm()

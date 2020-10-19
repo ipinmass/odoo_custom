@@ -1,7 +1,7 @@
 
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.addons import decimal_precision as dp
-
+from odoo.exceptions import AccessError, UserError, RedirectWarning, ValidationError, Warning
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -61,6 +61,7 @@ class TripExpenses(models.Model):
             inv_obj = self.env['account.invoice']
             journal_id = self.env.ref('mt_trip.mt_journal_customer_payment_id').id
             vinvoice = self.env['account.invoice'].new({'partner_id': self.partner_id.id})
+            expense_acc = self.env.ref('mt_trip.default_partner_account_expense').id
             # Get partner extra fields
             vinvoice._onchange_partner_id()
             inv_vals = vinvoice._convert_to_write(vinvoice._cache)
@@ -83,7 +84,7 @@ class TripExpenses(models.Model):
             inv_lines = {
                 'name': self.partner_id.name,
                 'origin': self.name,
-                'account_id': self.partner_id.property_account_receivable_id.id,
+                'account_id': expense_acc,
                 'price_unit': self.amount,
                 'quantity': 1,
                 'discount': 0.0,
@@ -103,7 +104,10 @@ class TripExpenses(models.Model):
 
     @api.one
     def button_confirm(self):
+        if self.state and self.state != 'draf':
+            raise ValidationError('Payment status is %s now, please check the related invoice down below' % (self.state))
         # ctx = self._context
+        expense_acc = self.env.ref('mt_trip.default_partner_account_expense').id
         inv_obj = self.env['account.invoice']
         partner_id = self.env.ref('mt_trip.supplier_generic_ma_travel')
         journal_id = self.env.ref('mt_trip.mt_journal_payment_id').id
@@ -120,7 +124,6 @@ class TripExpenses(models.Model):
         invoice_vals = vinvoice._convert_to_write(vinvoice._cache)
 
         name = self._get_name()
-        _logger.info('fafhaskfdddd---------- name %s', name)
         name = isinstance(name, list) and name[0] or name
         invoice_vals = {
             'name': 'Sup Invoice - ' + str(name),
@@ -137,7 +140,7 @@ class TripExpenses(models.Model):
         invoice_line_vals = {
             'name': partner_id.name,
             'origin': self.name or '',
-            'account_id': partner_id.property_account_payable_id.id,
+            'account_id': expense_acc,
             'price_unit': self.amount,
             'quantity': 1,
             'discount': 0.0,
@@ -149,3 +152,21 @@ class TripExpenses(models.Model):
         self.invoice_id = inv_created
         inv_created.action_invoice_open()
         return True
+
+    @api.multi
+    def action_invoice_show(self):
+        invoices = self.invoice_id
+        action_vals = {
+            'name': _('Invoices'),
+            'domain': [('id', 'in', [invoices.id])],
+            'view_type': 'form',
+            'res_model': 'account.invoice',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+        }
+        if len(invoices) == 1:
+            action_vals.update({'res_id': invoices[0].id, 'view_mode': 'form'})
+        else:
+            action_vals['view_mode'] = 'tree,form'
+        action_vals['views'] = [(self.env.ref('account.invoice_tree').id, 'tree'), (self.env.ref('account.invoice_form').id, 'form')]
+        return action_vals

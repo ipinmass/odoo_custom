@@ -9,7 +9,8 @@
                 <form string="Expenses">
                     <header>
                         <field name="trip_id" invisible="1"/>
-                        <button name="button_confirm" string="Confirm" type="object" attrs="{'invisible': [('state','not in',[False, 'draft', 'open', 'in_payment'])]}" class="oe_highlight" context="{'trip_id': trip_id}"/>
+                        <button name="button_confirm" string="Confirm" type="object" attrs="{'invisible': [('invoice_id', '!=', False)]}" class="oe_highlight" context="{'trip_id': trip_id}"/>
+                        <button name="action_invoice_show" string="Show Invoice" type="object" attrs="{'invisible': [('invoice_id', '=', False)]}"/>
                         <field name="state" widget="statusbar" />
                     </header>
                     <sheet>

@@ -9,7 +9,7 @@
             <!-- <field name="groups_id" eval="[(5,)]"/> -->
             <field name="arch" type="xml">
                 <xpath expr="//page[@name='other_info']" position="after">
-                    <page string="Payment proof">
+                    <page string="Payment Proofs">
                         <group>
                             <!-- <field name="is_image" invisible="1"/> -->
                             <field name="payment_proof_ids">
@@ -71,7 +71,7 @@
             <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
             <field name="arch" type="xml">
                 <field name="journal_id" position="after">
-                    <field name="payment_proof"/>
+                    <field name="payment_proof" attrs="{'invisible': [('payment_type','=','outbound')]}"/>
                 </field>
                 
             </field>
