@@ -386,7 +386,8 @@ class TripDocument(models.Model):
 
     @api.multi
     def write(self, values):
-        if values.get('attachment', False):
+        other_doc_type = self.env.ref('mt_config.id_document_type_other')
+        if values.get('attachment', False) and values.get('doc_type') != other_doc_type:
             history_obj = self.env['partner.document.history']
             partner = self.member_id.partner_id
             history_obj.create({
@@ -400,7 +401,9 @@ class TripDocument(models.Model):
 
     @api.model
     def create(self, vals):
-        if not self._context.get('create_from_buttton', False) and vals.get('member_id') and vals.get('attachment', False):
+        other_doc_type = self.env.ref('mt_config.id_document_type_other')
+        if not self._context.get('create_from_buttton', False) and vals.get('member_id') and vals.get('attachment', False)\
+           and vals.get('doc_type', False) != other_doc_type:
             history_obj = self.env['partner.document.history']
             partner = self.env['trip.member'].browse(vals.get('member_id')).partner_id
             history_obj.create({
