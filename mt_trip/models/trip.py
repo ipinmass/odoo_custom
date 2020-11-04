@@ -238,15 +238,16 @@ class TripMember(models.Model):
         dp_amt = self.dp_amount
         if dp_amt > 0.0:
             if not self.dp_proof:
-                raise ValidationError(_("Down Payment proof is required"))
+                raise ValidationError(_("You need to upload the payment proof for the down payment."))
             origin = 'DP - %s - %s ' % (self.partner_id.name, self.trip_id.name)
             inv_vals = self._prepare_invoice(origin=origin)
             inv_vals.update({'name': 'DP - ' + self.trip_id.name})
+            inv_vals.update({'is_downpayment': True})
             # if 'jpeg' in guess_mimetype(base64.b64decode(self.dp_proof)).lower():
             #     inv_vals.update({'payment_prove_img': self.dp_proof, 'is_image': True})
             # else:
 
-            inv_vals.update({'payment_proof': self.dp_proof})
+            # inv_vals.update({'payment_proof': self.dp_proof})
 
             inv_created = inv_obj.create(inv_vals)
             inv_line_vals = self._prepare_invoice_line(qty, dp_amt, origin=origin)
