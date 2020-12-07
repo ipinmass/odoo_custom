@@ -77,10 +77,10 @@
                             </page>
                             <page string="Profit Summary">
                                 <group>
-                                    <field name="total_expenses"/>
-                                    <field name="forcasted_income"/>
-                                    <field name="invoice_paid"/>
-                                    <field name="profit_loss"/>
+                                    <field name="total_expenses" widget='monetary'/>
+                                    <field name="forcasted_income" widget='monetary'/>
+                                    <field name="invoice_paid" widget='monetary'/>
+                                    <field name="profit_loss" widget='monetary'/>
                                 </group>
                             </page>
                         </notebook>

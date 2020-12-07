@@ -313,6 +313,7 @@ class TripMember(models.Model):
         templates = self.trip_id and self.trip_id.trip_template
         trip_doc_obj = self.env['trip.document']
         doc_history = self.env['partner.document.history']
+        other_doc_type = self.env.ref('mt_config.id_document_type_other')
         if templates:
             docs = {}
             histories = doc_history.search([('partner_id', '=', self.partner_id.id)])
@@ -322,7 +323,7 @@ class TripMember(models.Model):
                     docs.update({history.doc_type.id: {'create_date': history.create_date, 'doc': history.doc}})
             existed_doc_type = [d.doc_type.id for d in self.document_ids]
             for doc in templates.documents:
-                if doc.doc_type.id not in existed_doc_type:
+                if doc.doc_type.id not in existed_doc_type and doc.doc_type != other_doc_type:
                     v = {
                         'name': doc.name,
                         'member_id': self.id,

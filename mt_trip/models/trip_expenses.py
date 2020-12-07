@@ -29,7 +29,7 @@ class TripExpenses(models.Model):
     passport_img = fields.Binary('Scanned Passport', related='partner_id.passport_img')
     passport_exp = fields.Date('Passport Validity', related='partner_id.passport_exp')
     passport_issued = fields.Date('Passport Issued', related='partner_id.passport_issued')
-    ktp_no = fields.Char('KTP', elated='partner_id.ktp_no')
+    ktp_no = fields.Char('KTP', related='partner_id.ktp_no')
     dtof_birth = fields.Date('Date of Birth', related='partner_id.dtof_birth')
     trip_id_personal = fields.Many2one('res.partner', string='Customer', domain=[('customer', '=', True)])
     insurance_invoiced = fields.Boolean('Insurance Invoiced ?', default=False, readonly=True)
