@@ -74,11 +74,11 @@ class Tickets(models.Model):
     def _prepare_invoice_line(self, qty, amt_inv, origin=''):
         self.ensure_one()
         res = {}
-
+        account_sale = self.env.ref('mt_trip.default_customer_account_sales').id
         res = {
             'name': self.partner_id.name,
             'origin': origin,
-            'account_id': self.partner_id.property_account_receivable_id.id,
+            'account_id': account_sale,
             'price_unit': amt_inv,
             'quantity': qty,
             'discount': 0.0,

@@ -30,7 +30,7 @@
                             </group>
                             <group>
                                 <field name="sale_price"/>
-                                <field name="payment_type"/>
+                                <field name="payment_type" invisible="1"/>
                                 <field name="payment_term_id" attrs="{'invisible': [('payment_type', '!=', 'credit')], 'required': [('payment_type', '=', 'credit')]}"/>
                                 <field name="purchase_price"/>
                                 
