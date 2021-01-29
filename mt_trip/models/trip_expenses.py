@@ -34,19 +34,25 @@ class TripExpenses(models.Model):
     trip_id_personal = fields.Many2one('res.partner', string='Customer', domain=[('customer', '=', True)])
     insurance_invoiced = fields.Boolean('Insurance Invoiced ?', default=False, readonly=True)
 
+
     @api.onchange('expense_type')
     def _onchange_expense_type(self):
         context = self._context or {}
-        # if context.get('trip_id'):
-        #     query = '''
-        #         SELECT partner_id FROM trip_member WHERE trip_id=%sf
-        #     ''' % context.get('trip_id')
-        #     self.env.cr.execute(query)
-        #     res = self.env.cr.dictfetchall()
 
         if context.get('personal', None) is not None:
             domain = {'expense_type': [('personal', '=', context.get('personal'))]}
             return {'domain': domain}
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        context = self.env.context.copy() or {}
+        trip_id = context.get('trip_id')
+        partner_ids = []
+        if trip_id:
+            for member in self.env['mt.trip'].browse(trip_id).member_ids:
+                partner_ids.append(member.partner_id.id)
+        domain = {'partner_id': [('id', 'in', partner_ids)]}
+        return {'domain': domain}
 
     def _get_name(self):
         self.ensure_one()
@@ -104,6 +110,9 @@ class TripExpenses(models.Model):
 
     @api.one
     def button_confirm(self):
+        hotel_expense_type = self.env.ref('mt_config.id_expense_type_hotel').id
+        flight_expense_type = self.env.ref('mt_config.id_expense_type_flight').id
+
         if self.state and self.state != 'draf':
             raise ValidationError('Payment status is %s now, please check the related invoice down below' % (self.state))
         # ctx = self._context
@@ -151,6 +160,20 @@ class TripExpenses(models.Model):
         self.env['account.invoice.line'].create(invoice_line_vals)
         self.invoice_id = inv_created
         inv_created.action_invoice_open()
+        if self._context.get('params', {}).get('id', False):
+            trip = self.env['mt.trip'].browse(self._context.get('params').get('id'))
+            rel_member = [m for m in trip.member_ids if m.partner_id == self.partner_id]
+            if len(rel_member) > 0:
+                rel_member = rel_member[0]
+            if not rel_member or not self.code:
+                return True
+            if self.expense_type.id == hotel_expense_type:
+                rel_member.hotel_code = self.code
+            elif self.expense_type.id == flight_expense_type:
+                rel_member.flight_code = self.code
+            else:
+                pass
+
         return True
 
     @api.multi
