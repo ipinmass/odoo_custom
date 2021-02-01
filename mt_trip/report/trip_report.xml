@@ -12,7 +12,7 @@
                             <h2>
                                 Member Summary of : <span t-field="o.name"></span>
                             </h2>
-                            <table class="table table-sm o_main_table" name="member_list_table">
+                            <table class="table-bordered table-sm o_main_table" name="member_list_table">
                                 <thead>
                                     <th class="text-left"><span>No.</span></th>
                                     <th class="text-left"><span>GEN</span></th>
@@ -23,7 +23,7 @@
                                     <th class="text-left"><span>Flight T. Code</span></th>
                                     <th class="text-left"><span>Hotel T. Code</span></th>
                                 </thead>
-                                <tbody class="member_list_tbody">
+                                <tbody class="member_list_tbody font-weight-bold ">
                                     <t t-set="line_no" t-value="1"/>
                                     <t t-foreach="o.member_ids" t-as="line">
                                         <tr>
