@@ -49,8 +49,11 @@ class TripExpenses(models.Model):
         trip_id = context.get('trip_id')
         partner_ids = []
         if trip_id:
-            for member in self.env['mt.trip'].browse(trip_id).member_ids:
-                partner_ids.append(member.partner_id.id)
+            sql = '''
+            SELECT id FROM trip_member WHERE trip_id = %s
+            '''
+            self.env.cr.execute(sql, (trip_id,))
+            partner_ids = [x[0] for x in self.env.cr.fetchall()]
         domain = {'partner_id': [('id', 'in', partner_ids)]}
         return {'domain': domain}
 
