@@ -50,7 +50,7 @@ class TripExpenses(models.Model):
         partner_ids = []
         if trip_id:
             sql = '''
-            SELECT id FROM trip_member WHERE trip_id = %s
+            SELECT partner_id FROM trip_member WHERE trip_id = %s
             '''
             self.env.cr.execute(sql, (trip_id,))
             partner_ids = [x[0] for x in self.env.cr.fetchall()]
