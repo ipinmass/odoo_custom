@@ -31,7 +31,7 @@ class TripExpenses(models.Model):
     passport_issued = fields.Date('Passport Issued', related='partner_id.passport_issued')
     ktp_no = fields.Char('KTP', related='partner_id.ktp_no')
     dtof_birth = fields.Date('Date of Birth', related='partner_id.dtof_birth')
-    trip_id_personal = fields.Many2one('res.partner', string='Customer', domain=[('customer', '=', True)])
+    trip_id_personal = fields.Many2one('mt.trip', string='Related Trip')
     insurance_invoiced = fields.Boolean('Insurance Invoiced ?', default=False, readonly=True)
 
 
