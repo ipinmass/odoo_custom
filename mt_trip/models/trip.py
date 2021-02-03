@@ -127,7 +127,7 @@ class TripMember(models.Model):
     _name = 'trip.member'
     _order = 'sequence, id'
 
-    # name = fields.Char('Name', related='partner_id.name', readonly=True)
+    name = fields.Char('Name', related='partner_id.name', readonly=True)
     partner_id = fields.Many2one('res.partner', 'Customer', domain=[('customer', '=', True)], required=True)
     document_ids = fields.One2many('trip.document', 'member_id', string='Documents')
     dp_amount = fields.Float(string='DP Amount', digits=dp.get_precision('Product Price'))
@@ -153,6 +153,22 @@ class TripMember(models.Model):
     dp_proof = fields.Binary('DP proof')
     sequence = fields.Integer('No.')
     show_pay_reseller = fields.Boolean('Show Pay Reseller', default=False, compute='_check_show_reseller')
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        context = self.env.context.copy() or {}
+        trip_id = context.get('trip_id')
+        partner_ids = []
+        if trip_id:
+            sql = '''
+            SELECT partner_id FROM trip_member WHERE trip_id = %s
+            '''
+            self.env.cr.execute(sql, (trip_id,))
+            partner_ids = [x[0] for x in self.env.cr.fetchall()]
+            # _logger.info('----------------- len partner_ids = %s', len(partner_ids))
+
+        domain = {'partner_id': [('id', 'not in', partner_ids), ('customer', '=', True)]}
+        return {'domain': domain}
 
     @api.one
     @api.depends('is_reseller_paid', 'invoice_ids', 'invoice_ids.state')

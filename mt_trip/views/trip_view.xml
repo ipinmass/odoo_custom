@@ -29,7 +29,7 @@
                         </group>
                         <notebook>
                             <page string="Members" >
-                                <field name="member_ids" attrs="{'readonly': [('state', 'in', ['done','cancel','progress', 'progress'])]}">
+                                <field name="member_ids" attrs="{'readonly': [('state', 'in', ['done','cancel','progress', 'progress'])]}" context="{'trip_id': id}">
                                     <tree>
                                         <field name="sequence" widget="handle"/>
                                         <field name="partner_id"/>

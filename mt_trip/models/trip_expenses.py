@@ -54,7 +54,8 @@ class TripExpenses(models.Model):
             '''
             self.env.cr.execute(sql, (trip_id,))
             partner_ids = [x[0] for x in self.env.cr.fetchall()]
-        domain = {'partner_id': [('id', 'in', partner_ids)]}
+        # _logger.info('----------------- len partner_ids = %s', len(partner_ids))
+        domain = {'partner_id': [('id', 'in', partner_ids), ('customer', '=', True)]}
         return {'domain': domain}
 
     def _get_name(self):
