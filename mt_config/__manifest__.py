@@ -12,7 +12,8 @@
         'data/expense_type_data.xml',
         'views/document_type_view.xml',
         'views/expense_type_view.xml',
-        'security/ir.model.access.csv'
+        'security/ir.model.access.csv',
+        'views/company_view.xml',
     ],
     'demo': [
     ],
