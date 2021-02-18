@@ -70,3 +70,6 @@ done:
    andicole_add@yahoo.com
    support@amtourtravel.com
    miftha_nursaleh@yahoo.com
+
+username admin moodboa : admin
+password : SebuahTitik1.
