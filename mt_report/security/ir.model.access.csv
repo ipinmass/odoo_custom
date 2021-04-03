@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reporting_user,mt.reporting.user,mt_report.model_mt_reporting,mt_trip.mt_group_admin,1,1,1,1
+access_reporting_manager,mt.reporting.manager,mt_report.model_mt_reporting,base.group_system,1,1,1,1
+access_reporting_item_user,mt.reporting.item.user,mt_report.model_mt_reporting_item,mt_trip.mt_group_admin,1,1,1,1
+access_reporting_item_manager,mt.reporting.item.manager,mt_report.model_mt_reporting_item,base.group_system,1,1,1,1

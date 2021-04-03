@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Top menu item -->
+    <menuitem name="AM Invoicing"
+        id="am_menu_finance"
+        groups="account.group_account_user,account.group_account_manager,account.group_account_invoice"
+        web_icon="account,static/description/icon.png"
+        sequence="2"/>
+
+
+    <menuitem action="account.action_invoice_tree1" id="am_menu_action_invoice_tree1" parent="mt_report.am_menu_finance" sequence="1"/>
+    <menuitem action="account.action_invoice_tree2" id="am_menu_action_invoice_tree2" parent="mt_report.am_menu_finance" sequence="2"/>
+    <menuitem id="menu_show_reporting" name="Account Reporting" action="mt_report.action_mt_reporting_open" parent="mt_report.am_menu_finance" sequence="3" groups="mt_trip.mt_group_admin"/>
+
+    <!-- hide some menus -->
+    <!-- Original Invoicing -->
+    <record model="ir.ui.menu" id="account.menu_finance">
+        <field eval="[(6,0,[ref('base.group_no_one')])]" name="groups_id"/>
+    </record>
+    <!-- Apps -->
+    <record model="ir.ui.menu" id="base.menu_management">
+        <field eval="[(6,0,[ref('base.group_no_one')])]" name="groups_id"/>
+    </record>
+    <!-- Website -->
+    <record model="ir.ui.menu" id="website.menu_website_configuration">
+        <field eval="[(6,0,[ref('base.group_no_one')])]" name="groups_id"/>
+    </record>
+    <!-- Setting -->
+    <record model="ir.ui.menu" id="base.menu_administration">
+        <field eval="[(6,0,[ref('base.group_no_one')])]" name="groups_id"/>
+    </record>
+   
+
+    </data>
+</odoo>

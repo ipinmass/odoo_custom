@@ -11,6 +11,8 @@
         'views/company_view.xml',
         'report/mt_invoice.xml',
         'report/report.xml',
+        'views/invoice_view.xml',
+        'security/ir.model.access.csv'
         
         
     ],

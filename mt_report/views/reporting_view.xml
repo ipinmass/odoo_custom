@@ -7,32 +7,60 @@
             <field name="model">mt.reporting</field>
             <field name="arch" type="xml">
                 <form string="Account Reporting">
+                    <header>
+                        <button name="initiate" type="object" string="Initiate" class="oe_highlight" attrs="{'invisible': [('report_item', '!=', [])]}"/>
+                    </header>
                     <sheet>
                         <group>
-                           <group>
-                                <field name="show_report" widget="boolean_toggle"/>
+                            <group>
+                                <field name="year"/>
+                                <field name="balance"/>
                             </group>
                             <group>
                                 <field name="income"/>
                                 <field name="outcome"/>
                                 <field name="total_tax"/>
-                                <field name="balance"/>
-                                <field name="dt_from" invisible="1"/>
-                                <field name="dt_to" invisible="1"/>
                             </group>
                         </group>
+                        <notebook>
+                            <page string="Monthly Details">
+                                <field name="report_item">
+                                    <tree>
+                                        <field name="month"/>
+                                        <field name="income"/>
+                                        <field name="outcome"/>
+                                        <field name="total_tax"/>
+                                        <field name="balance"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
         </record>
+
+        <record id="mt_reporting_tree_view" model="ir.ui.view">
+            <field name="name">mt.reporting.tree</field>
+            <field name="model">mt.reporting</field>
+            <field name="arch" type="xml">
+                <tree string="Reporting">
+                    <field name="year"/>
+                    <field name="income"/>
+                    <field name="outcome"/>
+                    <field name="total_tax"/>
+                    <field name="balance"/>
+               </tree>
+            </field>
+        </record>
                 
         <record id="action_mt_reporting_open" model="ir.actions.act_window">
-             <field name="name">Trip</field>
+             <field name="name">Reporting</field>
              <field name="type">ir.actions.act_window</field>
              <field name="res_model">mt.reporting</field>
-             <field name="view_mode">form</field>
+             <field name="view_mode">tree,form</field>
              <field name="view_type">form</field>
-             <field name="view_id" ref="mt_report.mt_reporting_form_view"/>
+             <field name="view_id" ref="mt_report.mt_reporting_tree_view"/>
              <field name="help" type="html">
                  <p class="o_view_nocontent_smiling_face">
                      ...
@@ -41,10 +69,6 @@
                  </p>
              </field>
          </record>
-
-
-        
-        <menuitem id="menu_show_reporting" name="Account Reporting" action="action_mt_reporting_open" parent="mail.menu_root_discuss" sequence="40" groups="mt_trip.mt_group_admin"/>
 
     </data>
 </odoo>
