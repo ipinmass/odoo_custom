@@ -13,6 +13,7 @@
                         <button name="make_done" type="object" string="Make Done" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'progress')]}"/>
                         <button name="re_open" type="object" string="Re-Open" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'progress')]}"/>
                         <button name="make_cancel" type="object" string="Cancel" class="oe_highlight" attrs="{'invisible': [('state', 'in', ['done','cancel'])]}" groups="mt_trip.mt_group_trip_cancel"/>
+                        <button name="action_show_member_list" type="object" string="List all Members"/>
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet>
@@ -166,6 +167,25 @@
                     </group>
 
                 </form>
+            </field>
+        </record>
+
+        <record id="mt_trip_member_tree_view" model="ir.ui.view">
+            <field name="name">trip.member.tree</field>
+            <field name="model">trip.member</field>
+            <field name="arch" type="xml">
+                <tree string="Trip Member">
+                    <field name="sequence" widget="handle"/>
+                    <field name="partner_id"/>
+                    <field name="invoice_ids" invisible="1"/>
+                    <field name="document_ids" invisible="1"/>
+                    <field name="is_document_completed"/>
+                    <field name="is_reseller_paid"/>
+                    <button name="action_documents_create" string="Register Documents" type="object" attrs="{'invisible': [('document_ids', '!=', [])]}"/>
+                    <field name="is_invoice_paid"/>
+                    <button name="action_invoice_create" string="Create Invoices" type="object" attrs="{'invisible': [('invoice_ids', '!=', [])]}"/>
+                    <button name="action_invoice_show" string="Show Invoices" type="object" attrs="{'invisible': [('invoice_ids', '=', [])]}"/>
+               </tree>
             </field>
         </record>
 

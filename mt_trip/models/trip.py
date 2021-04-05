@@ -122,6 +122,24 @@ class Trip(models.Model):
         self.ensure_one()
         return 'Payment Summary'
 
+    @api.multi
+    def action_show_member_list(self):
+        member_ids = self.member_ids
+        action_vals = {
+            'name': _('Members'),
+            'domain': [('id', 'in', member_ids.ids)],
+            'view_type': 'form',
+            'res_model': 'trip.member',
+            'view_id': False,
+            'type': 'ir.actions.act_window',
+        }
+        if len(member_ids) == 1:
+            action_vals.update({'res_id': member_ids[0].id, 'view_mode': 'form'})
+        else:
+            action_vals['view_mode'] = 'tree,form'
+        action_vals['views'] = [(self.env.ref('mt_trip.mt_trip_member_tree_view').id, 'tree'), (self.env.ref('mt_trip.trip_member_form_view').id, 'form')]
+        return action_vals
+
 
 class TripMember(models.Model):
     _name = 'trip.member'
