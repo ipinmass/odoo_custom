@@ -142,7 +142,7 @@ class TrialView(models.TransientModel):
         tables, where_clause, where_params = self.env['account.move.line']._query_get()
         tables = tables.replace('"', '')
         if not tables:
-            tables = 'account_move_line'
+            tables = 'account_move_line JOIN account_move '
         wheres = [""]
         if where_clause.strip():
             wheres.append(where_clause.strip())
@@ -158,7 +158,7 @@ class TrialView(models.TransientModel):
 
         if data['journals']:
             filters += ' AND jrnl.id IN %s' % str(tuple(data['journals'].ids) + tuple([0]))
-        tables += 'JOIN account_journal jrnl ON (account_move_line.journal_id=jrnl.id)'
+        tables += ' JOIN account_journal jrnl ON (account_move_line.journal_id=jrnl.id)'
         # compute the balance, debit and credit for the provided accounts
         request = (
                     "SELECT account_id AS id, SUM(debit) AS debit, SUM(credit) AS credit, (SUM(debit) - SUM(credit)) AS balance" + \
