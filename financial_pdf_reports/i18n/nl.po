@@ -1,0 +1,627 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* financial_pdf_reports
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-06 11:39+0000\n"
+"PO-Revision-Date: 2021-10-06 11:39+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid ": General ledger"
+msgstr ": Grootboek"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid ": Trial Balance"
+msgstr ": Proefsaldo"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_balancesheet
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "<strong>Date from :</strong>"
+msgstr "<strong>Datum vanaf :</strong>"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_balancesheet
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "<strong>Date to :</strong>"
+msgstr "<strong>Datum tot:</strong>"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "<strong>Display Account:</strong>"
+msgstr "<strong>Account weergeven:</strong>"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "<strong>Display Account</strong>"
+msgstr "<strong>Account weergeven</strong>"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "<strong>Journals:</strong>"
+msgstr "<strong>tijdschriften:</strong>"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "<strong>Sorted By:</strong>"
+msgstr "<strong>Gesorteerd op:</strong>"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_balancesheet
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "<strong>Target Moves:</strong>"
+msgstr "<strong>Doelbewegingen:</strong>"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "Account"
+msgstr "Rekening"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__children_ids
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_account_financial_report_form
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_account_financial_report_tree
+msgid "Account Report"
+msgstr "Accountrapport"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__account_report_id
+#: model:ir.ui.menu,name:financial_pdf_reports.menu_account_report_configuration
+msgid "Account Reports"
+msgstr "Accountrapporten"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__type__account_type
+msgid "Account Type"
+msgstr "account type"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__account_type_ids
+msgid "Account Types"
+msgstr "Accounttypen"
+
+#. module: financial_pdf_reports
+#: model:ir.model,name:financial_pdf_reports.model_accounting_report_bi
+msgid "Accounting Report"
+msgstr "Boekhoudkundig rapport"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__account_ids
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__type__accounts
+msgid "Accounts"
+msgstr "rekeningen"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__accounting_report_bi__display_account__all
+msgid "All"
+msgstr "Alle"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__accounting_report_bi__target_move__all
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_balancesheet
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "All Entries"
+msgstr "Alle inzendingen"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__accounting_report_bi__target_move__posted
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_balancesheet
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "All Posted Entries"
+msgstr "Alle geplaatste berichten"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "All accounts"
+msgstr "Alle accounts"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "All accounts'"
+msgstr "Alle rekeningen'"
+
+#. module: financial_pdf_reports
+#: model:account.financial.report,name:financial_pdf_reports.bi_account_financial_report_assets0
+msgid "Assets"
+msgstr "Middelen"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__style_overwrite__0
+msgid "Automatic formatting"
+msgstr "Automatische opmaak"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_balancesheet
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "Balance"
+msgstr "Evenwicht"
+
+#. module: financial_pdf_reports
+#: model:account.financial.report,name:financial_pdf_reports.bi_account_financial_report_balancesheet0
+#: model:ir.actions.act_window,name:financial_pdf_reports.financial_pdf_reports_action_balance_sheet
+#: model:ir.actions.report,name:financial_pdf_reports.action_report_balancesheet
+#: model:ir.ui.menu,name:financial_pdf_reports.financial_pdf_reports_menu_balance_sheet
+msgid "Balance Sheet"
+msgstr "Balans"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.account_trail_balance_form
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_form_account_report_custom
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_form_general_ledger_custom_form
+msgid "Cancel"
+msgstr "Annuleren"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "Code"
+msgstr "Code"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__label_filter
+msgid "Column Label"
+msgstr "Kolomlabel"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__company_id
+msgid "Company"
+msgstr "Bedrijf"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_form_account_report_custom
+msgid "Comparison"
+msgstr "Vergelijking"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__create_uid
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__create_uid
+msgid "Created by"
+msgstr "Gemaakt door"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__create_date
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__create_date
+msgid "Created on"
+msgstr "Gemaakt op"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_balancesheet
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "Credit"
+msgstr "Credit"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "Currency"
+msgstr "Munteenheid"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__accounting_report_bi__filter_cmp__filter_date
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__accounting_report_bi__sortby__sort_date
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "Date"
+msgstr "Datum"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_form_account_report_custom
+msgid "Dates"
+msgstr "Data"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_balancesheet
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "Debit"
+msgstr "Debiteren"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__display_account
+msgid "Display Accounts"
+msgstr "Accounts weergeven"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__debit_credit
+msgid "Display Debit/Credit Columns"
+msgstr "Debet-/creditkolommen weergeven"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__display_name
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__display_name
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_report_financial_pdf_reports_report_balancesheet__display_name
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_report_financial_pdf_reports_report_generalledger__display_name
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_report_financial_pdf_reports_report_trialbalance__display_name
+msgid "Display Name"
+msgstr "Weergavenaam"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__display_detail__detail_flat
+msgid "Display children flat"
+msgstr "Kinderen plat weergeven"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__display_detail__detail_with_hierarchy
+msgid "Display children with hierarchy"
+msgstr "Kinderen met hiërarchie weergeven"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__display_detail
+msgid "Display details"
+msgstr "Details weergeven"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__enable_filter
+msgid "Enable Comparison"
+msgstr "Vergelijking inschakelen"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__date_to
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__date_to_cmp
+msgid "End Date"
+msgstr "Einddatum"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "Entry Label"
+msgstr "Invoerlabel"
+
+#. module: financial_pdf_reports
+#: model:account.financial.report,name:financial_pdf_reports.bi_account_financial_report_expense0
+msgid "Expense"
+msgstr "Kosten"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__filter_cmp
+msgid "Filter by"
+msgstr "Filteren op"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__style_overwrite
+msgid "Financial Report Style"
+msgstr "Stijl financieel verslag"
+
+#. module: financial_pdf_reports
+#: model:ir.actions.act_window,name:financial_pdf_reports.action_account_report_configuration
+#: model:ir.ui.menu,name:financial_pdf_reports.bi_menu_finance_report
+#: model:ir.ui.menu,name:financial_pdf_reports.menu_financial_report
+msgid "Financial Reports"
+msgstr "Financiële rapporten"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,help:financial_pdf_reports.field_account_financial_report__sign
+msgid ""
+"For accounts that are typically more debited than credited and that you "
+"would like to print as negative amounts in your reports, you should reverse "
+"the sign of the balance; e.g.: Expense account. The same applies for "
+"accounts that are typically more credited than debited and that you would "
+"like to print as positive amounts in your reports; e.g.: Income account."
+msgstr ""
+
+#. module: financial_pdf_reports
+#: model:ir.actions.act_window,name:financial_pdf_reports.financial_pdf_reports_action_general_ledger
+#: model:ir.actions.report,name:financial_pdf_reports.action_report_general_ledger
+#: model:ir.ui.menu,name:financial_pdf_reports.financial_pdf_reports_menu_general_ledger
+msgid "General Ledger"
+msgstr "Grootboek"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__id
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__id
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_report_financial_pdf_reports_report_balancesheet__id
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_report_financial_pdf_reports_report_generalledger__id
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_report_financial_pdf_reports_report_trialbalance__id
+msgid "ID"
+msgstr "ID kaart"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,help:financial_pdf_reports.field_accounting_report_bi__initial_balance
+msgid ""
+"If you selected date, this field allow you to add a row to display the "
+"amount of debit/credit/balance that precedes the filter you've set."
+msgstr ""
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__initial_balance
+msgid "Include Initial Balances"
+msgstr "Beginsaldi opnemen"
+
+#. module: financial_pdf_reports
+#: model:account.financial.report,name:financial_pdf_reports.bi_account_financial_report_income0
+msgid "Income"
+msgstr "Inkomen"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__style_overwrite__5
+msgid "Italic Text (smaller)"
+msgstr "Cursieve tekst (kleiner)"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "JRNL"
+msgstr ""
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__accounting_report_bi__sortby__sort_journal_partner
+msgid "Journal & Partner"
+msgstr "Tijdschrift & Partner"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "Journal and Partner"
+msgstr "Journaal en partner"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__journal_ids
+msgid "Journals"
+msgstr "tijdschriften"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report____last_update
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi____last_update
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_report_financial_pdf_reports_report_balancesheet____last_update
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_report_financial_pdf_reports_report_generalledger____last_update
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_report_financial_pdf_reports_report_trialbalance____last_update
+msgid "Last Modified on"
+msgstr "Laatst gewijzigd op"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__write_uid
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__write_uid
+msgid "Last Updated by"
+msgstr "Laatst bijgewerkt door"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__write_date
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__write_date
+msgid "Last Updated on"
+msgstr "Laatst geupdate op"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__level
+msgid "Level"
+msgstr "Peil"
+
+#. module: financial_pdf_reports
+#: model:account.financial.report,name:financial_pdf_reports.bi_account_financial_report_liability0
+#: model:account.financial.report,name:financial_pdf_reports.bi_account_financial_report_liabilitysum0
+msgid "Liability"
+msgstr "Aansprakelijkheid"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__style_overwrite__1
+msgid "Main Title 1 (bold, underlined)"
+msgstr "Hoofdtitel 1 (vet, onderstreept)"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "Move"
+msgstr "Beweging"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_balancesheet
+msgid "Name"
+msgstr "Naam"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__accounting_report_bi__filter_cmp__filter_no
+msgid "No Filters"
+msgstr "Geen filters"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__display_detail__no_detail
+msgid "No detail"
+msgstr "Geen detail"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__style_overwrite__4
+msgid "Normal Text"
+msgstr "Normale tekst"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__parent_id
+msgid "Parent"
+msgstr "Ouder"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "Partner"
+msgstr "Partner"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__sign__1
+msgid "Preserve balance sign"
+msgstr "Saldoteken behouden"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.account_trail_balance_form
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_form_account_report_custom
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_form_general_ledger_custom_form
+msgid "Print"
+msgstr "Afdrukken"
+
+#. module: financial_pdf_reports
+#: model:account.financial.report,name:financial_pdf_reports.bi_account_financial_report_profitloss_toreport0
+msgid "Profit (Loss) to report"
+msgstr "Winst (verlies) te rapporteren"
+
+#. module: financial_pdf_reports
+#: model:ir.ui.menu,name:financial_pdf_reports.financial_pdf_reports_menu_profit_loss
+msgid "Profit Loss"
+msgstr "Verlies"
+
+#. module: financial_pdf_reports
+#: model:ir.actions.act_window,name:financial_pdf_reports.financial_pdf_reports_action_profit_loss
+msgid "Profit Loss Sheet"
+msgstr "Winstverliesblad"
+
+#. module: financial_pdf_reports
+#: model:account.financial.report,name:financial_pdf_reports.bi_account_financial_report_profitandloss0
+msgid "Profit and Loss"
+msgstr "Winst en verlies"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+msgid "Ref"
+msgstr "Ref"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_account_financial_report_form
+msgid "Report"
+msgstr "Verslag doen van"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__name
+msgid "Report Name"
+msgstr "Rapportnaam"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.account_trail_balance_form
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.financial_pdf_reports_form_account_report_custom
+msgid "Report Options"
+msgstr "Rapportopties"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__account_report_id
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__type__account_report
+msgid "Report Value"
+msgstr "Rapportwaarde"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__sign__-1
+msgid "Reverse balance sign"
+msgstr "Omgekeerd saldoteken"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__sequence
+msgid "Sequence"
+msgstr "Volgorde"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__sign
+msgid "Sign on Reports"
+msgstr "Aanmelden Rapporten"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__style_overwrite__6
+msgid "Smallest Text"
+msgstr "Kleinste tekst"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__sortby
+msgid "Sort by"
+msgstr "Sorteer op"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__date_from
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__date_from_cmp
+msgid "Start Date"
+msgstr "Startdatum"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_accounting_report_bi__target_move
+msgid "Target Moves"
+msgstr "Doelbewegingen"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,help:financial_pdf_reports.field_accounting_report_bi__label_filter
+msgid ""
+"This label will be displayed on report to show the balance computed for the "
+"given comparison filter."
+msgstr ""
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,help:financial_pdf_reports.field_accounting_report_bi__debit_credit
+msgid ""
+"This option allows you to get more details about the way your balances are "
+"computed. Because it is space consuming, we do not allow to use it while "
+"doing a comparison."
+msgstr ""
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__style_overwrite__2
+msgid "Title 2 (bold)"
+msgstr "Titel 2 (vet)"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__style_overwrite__3
+msgid "Title 3 (bold, smaller)"
+msgstr "Titel 3 (vet, kleiner)"
+
+#. module: financial_pdf_reports
+#: model:ir.actions.act_window,name:financial_pdf_reports.action_trial_balance_report
+#: model:ir.actions.report,name:financial_pdf_reports.action_report_trial_balance
+#: model:ir.ui.menu,name:financial_pdf_reports.menu_trial_balance_report
+msgid "Trial Balance"
+msgstr "Proefsaldo"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,field_description:financial_pdf_reports.field_account_financial_report__type
+msgid "Type"
+msgstr "Type"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__account_financial_report__type__sum
+msgid "View"
+msgstr "Weergave"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__accounting_report_bi__display_account__not_zero
+msgid "With balance is not equal to 0"
+msgstr "Met saldo is niet gelijk aan 0"
+
+#. module: financial_pdf_reports
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "With balance not equal to zero"
+msgstr "Met saldo niet gelijk aan nul"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields.selection,name:financial_pdf_reports.selection__accounting_report_bi__display_account__movement
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_generalledger
+#: model_terms:ir.ui.view,arch_db:financial_pdf_reports.report_trialbalance
+msgid "With movements"
+msgstr "Met bewegingen"
+
+#. module: financial_pdf_reports
+#: model:ir.model.fields,help:financial_pdf_reports.field_account_financial_report__style_overwrite
+msgid ""
+"You can set up here the format you want this record to be displayed. If you "
+"leave the automatic formatting, it will be computed based on the financial "
+"reports hierarchy (auto-computed field 'level')."
+msgstr ""
+
+#. module: financial_pdf_reports
+#: model:ir.model,name:financial_pdf_reports.model_account_financial_report
+msgid "account.financial.report"
+msgstr ""
+
+#. module: financial_pdf_reports
+#: model:ir.model,name:financial_pdf_reports.model_report_financial_pdf_reports_report_balancesheet
+msgid "report.financial_pdf_reports.report_balancesheet"
+msgstr ""
+
+#. module: financial_pdf_reports
+#: model:ir.model,name:financial_pdf_reports.model_report_financial_pdf_reports_report_generalledger
+msgid "report.financial_pdf_reports.report_generalledger"
+msgstr ""
+
+#. module: financial_pdf_reports
+#: model:ir.model,name:financial_pdf_reports.model_report_financial_pdf_reports_report_trialbalance
+msgid "report.financial_pdf_reports.report_trialbalance"
+msgstr ""
