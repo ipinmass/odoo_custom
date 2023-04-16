@@ -33,8 +33,9 @@
             <field name="model">account.financial.report</field>
             <field name="arch" type="xml">
                 <tree string="Account Report">
+                    <field name="sequence" widget="handle"/>
                     <field name="name"/>
-                    <field name="parent_id" invisible="1"/>
+                    <field name="parent_id" />
                     <field name="type"/>
                     <field name="account_report_id"/>
                 </tree>
