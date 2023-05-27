@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="sale_order_send_whatsapp" model="ir.ui.view">
+            <field name="name">sale.order.send.whatsapp</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_quotation_send']" position="after">
+                   <button name="button_send_whasapp" type="object" string="Send Whatsapp" class="oe_highlight"/>
+                </xpath>
+            </field>
+        </record>
+</odoo>
